@@ -2,6 +2,7 @@ import axios from "axios";
 import { createWriteStream } from 'fs';
 import {dirname, resolve} from "path";
 import {fileURLToPath} from "url";
+import{errToLogFile} from "./errwriter.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -19,6 +20,6 @@ export async function downloadImage(url, filename) {
             stream.on('finish', () => resolve(Path))
         })
     } catch (e) {
-        console.log("error while downloading img", e)
+        errToLogFile(`error while downloading img, ERROR:${e}, FILE: image.js`)
     }
 }

@@ -2,6 +2,8 @@ import OpenAIApi from "openai";
 import Configuration from "openai";
 import {createReadStream} from 'fs'
 import {openaiKey} from "./config.js";
+import{errToLogFile} from "./errwriter.js";
+
 class openAI{
     roles = {
         ASSISTANT: 'assistant',
@@ -26,7 +28,7 @@ class openAI{
         }
         catch (e)
         {
-            console.log('error while gpt chat', e)
+            errToLogFile(`error while gpt chat, ERROR:${e}, FILE: openai.js `)
         }
     }
 
@@ -40,7 +42,7 @@ class openAI{
         }
         catch (e)
         {
-            console.log('error while transcription', e.message)
+            errToLogFile(`error while transcription, ERROR:${e}, FILE: openai.js`)
         }
     }
     async dalle(promt) {
@@ -54,7 +56,7 @@ class openAI{
             return response.data[0].url
 
         }catch (e){
-            console.log('error in generating img',e)
+            errToLogFile(`error in generating img, ERROR: ${e}, FILE: openai.js`)
         }
     }
 }

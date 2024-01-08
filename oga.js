@@ -5,6 +5,7 @@ import { createWriteStream } from 'fs';
 import {dirname,resolve} from 'path';
 import {fileURLToPath} from 'url';
 import {remove_file} from "./remove.js";
+import {errToLogFile} from "./errwriter.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 class OgaConverter{
@@ -29,7 +30,8 @@ class OgaConverter{
         }
         catch (e)
         {
-            console.log('Error while creating mp3 ', e.message)
+            errToLogFile(`Error while creating mp3, ERROR: ${e} , FILE: oga.js`)
+
         }
     }
 
@@ -50,7 +52,7 @@ class OgaConverter{
         }
         catch (e)
         {
-            console.log("error while creating oga",e.message)
+            errToLogFile(`error while creating oga, ERROR:${e}, FILE: oga.js`)
         }
     }
 }
