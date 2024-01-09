@@ -37,3 +37,8 @@ Axios
 ```
 npm i axios
 ```
+also need to modify your ```package .json ``` by adding
+```
+"type": "module",
+```
+after parametter "main"
