@@ -12,7 +12,7 @@
 - [axios](https://github.com/axios/axios)
 - [fluent-ffmpeg](https://github.com/fluent-ffmpeg/node-fluent-ffmpeg)
 
- ##begin
+ ## begin
  For the bot to work correctly, you need to install the following libraries using npm:
  
  fluent-ffmpeg
