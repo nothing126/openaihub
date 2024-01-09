@@ -4,9 +4,9 @@
 ## Content
 - [technologies](#technologies)
 - [Begin](#begin)
-- [To do](#toDo)
+- [To do](#to-do)
 - [Contributions](#contributions)
-- [project team](#team )
+- [project team](#project-team )
 
 - ## technologies
 - [JS](https://www.javascript.com/)
@@ -68,7 +68,7 @@ Also you need ```config.js```  in which the api keys will be stored. For example
     export const openaiKey ='YOUR OPENAI KEY'
     export const tgKey =  'YOUR TELEGRAM KEY'
 ```
-## ToDo
+## To do
 - [x] add readme
 - [ ] improve image generation
 - [ ] switch to gpt-4
@@ -76,6 +76,6 @@ Also you need ```config.js```  in which the api keys will be stored. For example
 ## Contributions      
 for cooperation, suggestions or questions please contact forgptjs12@gmail.com
 
-## Team
+## Project team
 Its my own project developed only by me
 
