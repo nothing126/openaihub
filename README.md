@@ -3,7 +3,7 @@
  
 ## content
 - [technologies](#technologies)
-- [Begin](#начало-работы)
+- [Begin](#begin)
 
 - ## technologies
 - [JS](https://www.javascript.com/)
@@ -11,3 +11,21 @@
 - [telegram Api](https://core.telegram.org/bots)
 - [axios](https://github.com/axios/axios)
 - [fluent-ffmpeg](https://github.com/fluent-ffmpeg/node-fluent-ffmpeg)
+
+ ##begin
+ For the bot to work correctly, you need to install the following libraries using npm:
+ 
+ fluent-ffmpeg
+ ```
+ npm i fluent-ffmpeg @ffmpeg-installer/ffmpeg
+```
+
+OpenAiApi 
+```npm install openai ```
+
+Telegram Api
+``` npm install i  node-telegram-bot-api ```
+```npm install i  telegraf ```
+
+Axios
+```npm i axios```
