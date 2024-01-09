@@ -42,3 +42,18 @@ also need to modify your ```package .json ``` by adding
 "type": "module",
 ```
 after parametter "main"
+You also need to create the following files in the project root:
+```userIds.json```
+which should contain records of the id of people who can use the bot. It should also indicate the number of requests that the bot can answer. Message counter need to be equals 0 atthe start of project. For example:
+```
+{
+  "~user id~": {
+    "messageLimit": 2,
+    "messageCount": 0
+  },
+  "~user id~": {
+    "messageLimit": 3 //limit of requests,
+    "messageCount": 0 //count of messages
+  }
+}
+```
