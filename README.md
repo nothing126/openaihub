@@ -4,6 +4,9 @@
 ## Content
 - [technologies](#technologies)
 - [Begin](#begin)
+- [To do](#toDo)
+- [Contributions](#contributions)
+- [project team](# Project team)
 
 - ## technologies
 - [JS](https://www.javascript.com/)
@@ -65,7 +68,7 @@ Also you need ```config.js```  in which the api keys will be stored. For example
     export const openaiKey ='YOUR OPENAI KEY'
     export const tgKey =  'YOUR TELEGRAM KEY'
 ```
-## To do
+## ToDo
 - [x] add readme
 - [ ] improve image generation
 - [ ] switch to gpt-4
