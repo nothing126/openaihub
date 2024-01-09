@@ -15,7 +15,6 @@
     ·
     <a href="https://t.me/Nonthing1571">Report Bug</a>
     ·
-    <a href="https://t.me/Nonthing1571">Request Feature</a>
   </p>
 </div>
 
