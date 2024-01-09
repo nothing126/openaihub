@@ -4,7 +4,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/nothing126/openaihub/blob/master/img/dalle.jpg">
-    <img src="https://github.com/nothing126/openaihub/blob/master/img/dalle.jpg" alt="Logo" width="120" height="120">
+    <img src="https://github.com/nothing126/openaihub/blob/master/img/dalle.jpg" alt="Logo" width="170" height="170">
   </a>
 
   <h3 align="center">Dalle</h3>
