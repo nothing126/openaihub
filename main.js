@@ -3,7 +3,7 @@ import { Markup} from 'telegraf';
 import {openai} from "./openai.js";
 
 import {code} from "telegraf/format";
-import {oga} from './oga.js'
+import {oga} from './oga.js';
 import {RandN} from "./rand.js";
 
 import {downloadImage}  from "./image.js"
@@ -13,7 +13,8 @@ import {  tgKey } from './config.js';
 import {message} from "telegraf/filters";
 import{writeToLogFile} from './logwriter.js'
 import {errToLogFile} from "./errwriter.js";
-import{loadUserData} from'./loaddata.js'
+import{loadUserData} from'./loaddata.js';
+import {plus_count}from "./plus_count.js"
 
 const bot = new Telegraf(tgKey)
 
@@ -21,25 +22,27 @@ const INITIAL_SESSION= {
     messages: [],
 }
 
-
 bot.use(session())
-
 
 bot.command('start', async (ctx)=>{
     ctx.session = INITIAL_SESSION
     const userId = ctx.from.id;
-    const userData = await loadUserData();
+
     await writeToLogFile(`User: ${ctx.message.from.id} enter start command`)
     try{
-        if (userData.userIds.includes(String(userId))) {
-            await ctx.reply('здравствуйте, выберите режим', Markup.inlineKeyboard([
-            [Markup.button.callback('Разговор с ChatGPT', 'gpt')],
-            [Markup.button.callback('Генерация картинок', 'dalle')],
-            [Markup.button.callback('голос в текст', 'v2t')],
-        ]))
-        }else{
-           await ctx.reply('Ваш id не авторизирован в базе данных, пожалуйста свяжитесь с администратором')
-        }
+        const usersData = await loadUserData();
+        const count = usersData[userId].messageCount
+        const limit = usersData[userId].messageLimit
+        await plus_count(userId,1)
+        if (usersData[userId] && count < limit) {
+                await ctx.reply('здравствуйте, выберите режим', Markup.inlineKeyboard([
+                    [Markup.button.callback('Разговор с ChatGPT', 'gpt')],
+                    [Markup.button.callback('Генерация картинок', 'dalle')],
+                    [Markup.button.callback('голос в текст', 'v2t')],
+                ]))
+            }else {
+                await ctx.reply('Вы достигли лимита сообщений.');
+            }
     }catch (e) {
         await ctx.reply('что то пошло не так, повторите попытку')
         await errToLogFile(`ERROR WHILE START COMMAND: {
@@ -162,27 +165,36 @@ bot.on(message('voice'), async (ctx) => {
 
 async function GPT_t(ctx){
     ctx.session ??= INITIAL_SESSION
-    await ctx.reply("принял ваш запрос, ожидайте ответа (это может занять несколько минут)")
+
 
     try {
-        await writeToLogFile(`User: ${ctx.message.from.id} make GPT text request`)
+        const userId = ctx.from.id;
+        const usersData = await loadUserData();
+        const count = usersData[userId].messageCount
+        const limit = usersData[userId].messageLimit
+        if (usersData[userId] && count < limit) {
+            await ctx.reply("принял ваш запрос, ожидайте ответа (это может занять несколько минут)")
+            await plus_count(userId,1)
+                await writeToLogFile(`User: ${ctx.message.from.id} make GPT text request`)
 
-        ctx.session.messages.push({
-                role: openai.roles.USER,
-                content:ctx.message.text
-            })
+                ctx.session.messages.push({
+                    role: openai.roles.USER,
+                    content: ctx.message.text
+                })
 
-            const rsp = await openai.chat(ctx.session.messages);
-            ctx.session.messages.push({
-                role: openai.roles.ASSISTANT,
-                content: rsp
-            })
+                const rsp = await openai.chat(ctx.session.messages);
+                ctx.session.messages.push({
+                    role: openai.roles.ASSISTANT,
+                    content: rsp
+                })
 
-            await ctx.reply(String(rsp), Markup.inlineKeyboard([
-                Markup.button.callback('Выйти', 'exit'),
-            ]
-            ))
-
+                await ctx.reply(String(rsp), Markup.inlineKeyboard([
+                        Markup.button.callback('Выйти', 'exit'),
+                    ]
+                ))
+            } else {
+                ctx.reply('Вы достигли лимита сообщений.');
+            }
         }catch (e) {
        await ctx.reply('что то пошло не так, повторите попытку')
         await errToLogFile(`ERROR IN GPT TEXT REQUEST: {
@@ -196,29 +208,39 @@ async function GPT_t(ctx){
   async function GPT_v(ctx){
         ctx.session ??= INITIAL_SESSION
         try {
-            await writeToLogFile(`User: ${ctx.message.from.id} make GPT voice request`)
-            await ctx.reply('сообщение получил, жду ответа от сервера (это может занять несколько минут)')
-            const link = await ctx.telegram.getFileLink(ctx.message.voice.file_id)
-            const user_id = String(ctx.message.from.id)
-            const ogaPath = await oga.create(link.href,user_id)
-            const filename = await  RandN()
-            const mp3Path = await oga.toMp3(ogaPath,filename)
-            const txt = await openai.transcription(mp3Path)
-            await ctx.reply(`Ваш запрос: ${String(txt)}`)
+            const userId = ctx.from.id;
+            const usersData = await loadUserData();
+            const count = usersData[userId].messageCount
+            const limit = usersData[userId].messageLimit
+            if (usersData[userId] && count < limit) {
+                await plus_count(userId,1)
+                    await writeToLogFile(`User: ${ctx.message.from.id} make GPT voice request`)
+                    await ctx.reply('сообщение получил, жду ответа от сервера (это может занять несколько минут)')
+                    const link = await ctx.telegram.getFileLink(ctx.message.voice.file_id)
+                    const user_id = String(ctx.message.from.id)
+                    const ogaPath = await oga.create(link.href, user_id)
+                    const filename = await RandN()
+                    const mp3Path = await oga.toMp3(ogaPath, filename)
+                    const txt = await openai.transcription(mp3Path)
+                    await ctx.reply(`Ваш запрос: ${String(txt)}`)
 
-            ctx.session.messages.push({
-                role: openai.roles.USER,
-                content: txt
-            })
+                    ctx.session.messages.push({
+                        role: openai.roles.USER,
+                        content: txt
+                    })
 
-            const rsp = await openai.chat( ctx.session.messages)
-            ctx.session.messages.push({
-                role: openai.roles.ASSISTANT,
-                content: rsp
-            })
+                    const rsp = await openai.chat(ctx.session.messages)
+                    ctx.session.messages.push({
+                        role: openai.roles.ASSISTANT,
+                        content: rsp
+                    })
 
-            await ctx.reply( String(rsp), Markup.inlineKeyboard([
-                Markup.button.callback('Выйти', 'exit'),]))
+                    await ctx.reply(String(rsp), Markup.inlineKeyboard([
+                        Markup.button.callback('Выйти', 'exit'),]))
+
+                } else {
+                    ctx.reply('Вы достигли лимита сообщений.');
+                }
         } catch(e) {
            await ctx.reply('что то пошло не так, повторите попытку')
             await errToLogFile(`ERROR IN GPT VOICE REQUEST : {
@@ -231,22 +253,32 @@ async function GPT_t(ctx){
 async function dalle_t(ctx){
     ctx.session ??= INITIAL_SESSION
         try {
-            await writeToLogFile(`User: ${ctx.message.from.id} make dall-e text request`)
-            ctx.reply(code('генерация картинки...'))
-            ctx.reply(code('дождитесь окончания генерации, это может занять несколько минут'))
+            const userId = ctx.from.id;
+            const usersData = await loadUserData();
+            const count = usersData[userId].messageCount
+            const limit = usersData[userId].messageLimit
+            if (usersData[userId] || count < limit) {
+
+                await plus_count(userId,1)
+                    await writeToLogFile(`User: ${ctx.message.from.id} make dall-e text request`)
+                    ctx.reply(code('генерация картинки...'))
+                    ctx.reply(code('дождитесь окончания генерации, это может занять несколько минут'))
 
 
-            const url = await openai.dalle(ctx.message.text)
-            const filename = await RandN()
-            const image_path = await downloadImage(url, filename)
-            await ctx.replyWithDocument({source: image_path})
-            ctx.reply('следующая генерация доступна через минуту')
+                    const url = await openai.dalle(ctx.message.text)
+                    const filename = await RandN()
+                    const image_path = await downloadImage(url, filename)
+                    await ctx.replyWithDocument({source: image_path})
+                    ctx.reply('следующая генерация доступна через минуту')
 
-            ctx.reply('хотите выйти?',Markup.inlineKeyboard([
-                Markup.button.callback('Выйти', 'exit'),
-            ]
-            ))
-            await remove_file(image_path)
+                    ctx.reply('хотите выйти?', Markup.inlineKeyboard([
+                            Markup.button.callback('Выйти', 'exit'),
+                        ]
+                    ))
+                    await remove_file(image_path)
+                } else {
+                    ctx.reply('Вы достигли лимита сообщений.');
+                }
 
         }catch (e) {
             await ctx.reply('что то пошло не так, повторите попытку')
@@ -261,26 +293,36 @@ async function dalle_t(ctx){
 async function dalle_v(ctx){
       ctx.session ??= INITIAL_SESSION
         try {
-          ctx.reply(code('генерация картинки...'))
-            await writeToLogFile(`User: ${ctx.message.from.id} make dall-e voice request`)
-            const link = await ctx.telegram.getFileLink(ctx.message.voice.file_id)
-            const filename = await RandN()
-            const ogaPath = await oga.create(link.href, filename)
-            const mp3Path = await oga.toMp3(ogaPath, filename)
-            const text = await openai.transcription(mp3Path)
+            const userId = ctx.from.id;
+            const usersData = await loadUserData();
+            const count = usersData[userId].messageCount
+            const limit = usersData[userId].messageLimit
+            if (usersData[userId] || count < limit) {
 
-            await ctx.reply(code(`ваш запрос: ${text}`))
+                await plus_count(userId,1)
+                    ctx.reply(code('генерация картинки...'))
+                    await writeToLogFile(`User: ${ctx.message.from.id} make dall-e voice request`)
+                    const link = await ctx.telegram.getFileLink(ctx.message.voice.file_id)
+                    const filename = await RandN()
+                    const ogaPath = await oga.create(link.href, filename)
+                    const mp3Path = await oga.toMp3(ogaPath, filename)
+                    const text = await openai.transcription(mp3Path)
 
-            const url = await openai.dalle(String(text))
-            const image_path = await downloadImage(url, filename)
-            await ctx.replyWithDocument({source: image_path})
-            ctx.reply('следующая генерация доступна через минуту')
+                    await ctx.reply(code(`ваш запрос: ${text}`))
 
-            ctx.reply('хотите выйти?', Markup.inlineKeyboard([
-                Markup.button.callback('Выйти', 'exit'),
-            ]
-            ))
-            await remove_file(image_path)
+                    const url = await openai.dalle(String(text))
+                    const image_path = await downloadImage(url, filename)
+                    await ctx.replyWithDocument({source: image_path})
+                    ctx.reply('следующая генерация доступна через минуту')
+
+                    ctx.reply('хотите выйти?', Markup.inlineKeyboard([
+                            Markup.button.callback('Выйти', 'exit'),
+                        ]
+                    ))
+                    await remove_file(image_path)
+                } else {
+                    ctx.reply('Вы достигли лимита сообщений.');
+                }
         }catch (e) {
             await ctx.reply('что то пошло не так, повторите попытку')
             await errToLogFile(`ERROR IN DALLE VOICE REQUEST: {User: ${ctx.message.from.id} 
@@ -293,20 +335,31 @@ async function dalle_v(ctx){
 async function v2t_v(ctx){
     ctx.session ??= INITIAL_SESSION
         try {
-            await writeToLogFile(`User: ${ctx.message.from.id} make v2t voice request`)
-            await ctx.reply('отправьте или перешлите голосовое сообщение')
-            await ctx.reply(code('сообщение принял, жду ответ от сервера...'))
+            const userId = ctx.from.id;
+            const usersData = await loadUserData();
+            const count = usersData[userId].messageCount
+            const limit = usersData[userId].messageLimit
+            if (usersData[userId] || count < limit) {
 
-            const link = await ctx.telegram.getFileLink(ctx.message.voice.file_id)
-            const filename = await RandN()
-            const ogaPath = await oga.create(link.href, filename)
-            const mp3Path = await oga.toMp3(ogaPath, filename)
-            const text = await openai.transcription(mp3Path)
-            await ctx.reply(`текст сообщения: ${text}`, Markup.inlineKeyboard([
-                Markup.button.callback('Выйти', 'exit'),
-            ]
-            ))
-            await remove_file(mp3Path)
+                await plus_count(userId,1)
+                    await writeToLogFile(`User: ${ctx.message.from.id} make v2t voice request`)
+                    await ctx.reply('отправьте или перешлите голосовое сообщение')
+                    await ctx.reply(code('сообщение принял, жду ответ от сервера...'))
+
+                    const link = await ctx.telegram.getFileLink(ctx.message.voice.file_id)
+                    const filename = await RandN()
+                    const ogaPath = await oga.create(link.href, filename)
+                    const mp3Path = await oga.toMp3(ogaPath, filename)
+                    const text = await openai.transcription(mp3Path)
+                    await ctx.reply(`текст сообщения: ${text}`, Markup.inlineKeyboard([
+                            Markup.button.callback('Выйти', 'exit'),
+                        ]
+                    ))
+                    await remove_file(mp3Path)
+                } else {
+                    ctx.reply('Вы достигли лимита сообщений.');
+                }
+
         }catch (e){
             ctx.reply('что то пошло не так, повторите попытку')
             await errToLogFile(`ERROR IN V2T VOICE REQUEST: {
@@ -318,11 +371,22 @@ async function v2t_v(ctx){
 async function v2t_t (ctx){
     ctx.session ??= INITIAL_SESSION
     try {
-        await writeToLogFile(`User: ${ctx.message.from.id} make dall-e text request`)
-        ctx.reply('отправьте или перешлите голосовое сообщение', Markup.inlineKeyboard([
-                Markup.button.callback('Выйти', 'exit'),
-            ]
+        const userId = ctx.from.id;
+        const usersData = await loadUserData();
+        const count = usersData[userId].messageCount
+        const limit = usersData[userId].messageLimit
+        if (usersData[userId] || count < limit) {
+
+            await plus_count(userId,1)
+            await writeToLogFile(`User: ${ctx.message.from.id} make dall-e text request`)
+            ctx.reply('отправьте или перешлите голосовое сообщение', Markup.inlineKeyboard([
+                    Markup.button.callback('Выйти', 'exit'),
+                ]
             ))
+        }else{
+            ctx.reply('Вы достигли лимита сообщений.');
+        }
+
         }catch (e) {
         await ctx.reply('что то пошло не так, повторите попытку')
         await errToLogFile(`ERROR IN V2T TEXT REQUEST: {
