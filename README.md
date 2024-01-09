@@ -17,17 +17,17 @@
  
  fluent-ffmpeg
  ```sh
- npm i fluent-ffmpeg @ffmpeg-installer/ffmpeg
+ $ npm i fluent-ffmpeg @ffmpeg-installer/ffmpeg
 ```
 
 OpenAiApi 
 ```sh
-npm install openai
+$ npm install openai
 ```
 
 Telegram Api
 ```sh
-npm install i  node-telegram-bot-api
+$ npm install i  node-telegram-bot-api
 ```
 ```sh
 npm install i  telegraf
@@ -35,7 +35,7 @@ npm install i  telegraf
 
 Axios
 ```sh
-npm i axios
+$ npm i axios
 ```
 also need to modify your ```package .json ``` by adding
 ```javascript
@@ -57,3 +57,4 @@ which should contain records of the id of people who can use the bot. It should 
   }
 }
 ```
+
