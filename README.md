@@ -6,7 +6,7 @@
 - [Begin](#begin)
 - [To do](#toDo)
 - [Contributions](#contributions)
-- [project team](# Project team)
+- [project team](#team )
 
 - ## technologies
 - [JS](https://www.javascript.com/)
@@ -76,6 +76,6 @@ Also you need ```config.js```  in which the api keys will be stored. For example
 ## Contributions      
 for cooperation, suggestions or questions please contact forgptjs12@gmail.com
 
-## Project team
+## Team
 Its my own project developed only by me
 
