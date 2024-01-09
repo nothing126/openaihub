@@ -3,8 +3,8 @@
  <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  <a href="https://github.com/nothing126/openaihub/blob/master/img/dalle.jpg">
+    <img src="https://github.com/nothing126/openaihub/blob/master/img/dalle.jpg" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Dalle</h3>
