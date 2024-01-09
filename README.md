@@ -1,5 +1,5 @@
- # OpenAihub
- telegram bot based on JS using telegraf. The main goal of the project is to simplify work with chatGPT and dal-e-3 
+ # Dalle
+ 
  <!-- PROJECT LOGO -->
 <br />
 <div align="center">
@@ -8,7 +8,7 @@
   </a>
 
   <h3 align="center">Dalle</h3>
-
+  telegram bot based on JS using telegraf. The main goal of the project is to simplify work with chatGPT and dal-e-3 
   <p align="center">
     <br />
     <a href="https://t.me/Nonthing1571">Report Bug</a>
