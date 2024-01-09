@@ -30,7 +30,7 @@ Telegram Api
 $ npm install i  node-telegram-bot-api
 ```
 ```sh
-npm install i  telegraf
+$ npm install i  telegraf
  ```
 
 Axios
@@ -56,5 +56,13 @@ which should contain records of the id of people who can use the bot. It should 
     "messageCount": 0 //count of messages
   }
 }
+```
+For logs of using and error logs you need to create text files ```logs``` and ```errorlogs``` also you can change file names in ```errwriter.js``` and ```logwriter.js```
+For downloading images you need to create folder in root of project and change path in ```image.json```
+For downloading voices you need to create folder in the root of project and change path in ```oga.js```
+Also you need ```config.js```  in which the api keys will be stored. For example:
+```javascript
+    export const openaiKey ='YOUR OPENAI KEY'
+    export const tgKey =  'YOUR TELEGRAM KEY'
 ```
 
