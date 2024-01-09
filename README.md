@@ -17,28 +17,34 @@
  
  fluent-ffmpeg
  ```
+sh
  npm i fluent-ffmpeg @ffmpeg-installer/ffmpeg
 ```
 
 OpenAiApi 
 ```
+sh
 npm install openai
 ```
 
 Telegram Api
-``` 
+```
+sh
 npm install i  node-telegram-bot-api
 ```
 ```
+sh
 npm install i  telegraf
  ```
 
 Axios
 ```
+sh
 npm i axios
 ```
 also need to modify your ```package .json ``` by adding
 ```
+sh
 "type": "module",
 ```
 after parametter "main"
@@ -47,6 +53,7 @@ You also need to create the following files in the project root:
 which should contain records of the id of people who can use the bot. It should also indicate the number of requests that the bot can answer. Message counter need to be equals 0 atthe start of project. For example:
 ```
 {
+javascript
   "~user id~": {
     "messageLimit": 2,
     "messageCount": 0
