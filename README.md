@@ -21,11 +21,19 @@
 ```
 
 OpenAiApi 
-```npm install openai ```
+```
+npm install openai
+```
 
 Telegram Api
-``` npm install i  node-telegram-bot-api ```
-```npm install i  telegraf ```
+``` 
+npm install i  node-telegram-bot-api
+```
+```
+npm install i  telegraf
+ ```
 
 Axios
-```npm i axios```
+```
+npm i axios
+```
