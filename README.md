@@ -4,17 +4,15 @@
 <br />
 <div align="center">
   <a href="https://github.com/nothing126/openaihub/blob/master/img/dalle.jpg">
-    <img src="https://github.com/nothing126/openaihub/blob/master/img/dalle.jpg" alt="Logo" width="80" height="80">
+    <img src="https://github.com/nothing126/openaihub/blob/master/img/dalle.jpg" alt="Logo" width="120" height="120">
   </a>
 
   <h3 align="center">Dalle</h3>
 
   <p align="center">
     <br />
-    <a href="https://t.me/Nonthing1571">View Demo</a>
-    ·
     <a href="https://t.me/Nonthing1571">Report Bug</a>
-    ·
+    
   </p>
 </div>
 
