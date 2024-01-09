@@ -1,7 +1,7 @@
  # OpenAihub
  telegram bot based on JS using telegraf. The main goal of the project is to simplify work with chatGPT and dal-e-3 
  
-## content
+## Content
 - [technologies](#technologies)
 - [Begin](#begin)
 
@@ -12,7 +12,7 @@
 - [axios](https://github.com/axios/axios)
 - [fluent-ffmpeg](https://github.com/fluent-ffmpeg/node-fluent-ffmpeg)
 
- ## begin
+ ## Begin
  For the bot to work correctly, you need to install the following libraries using npm:
  
  fluent-ffmpeg
@@ -57,12 +57,18 @@ which should contain records of the id of people who can use the bot. It should 
   }
 }
 ```
-For logs of using and error logs you need to create text files ```logs``` and ```errorlogs``` also you can change file names in ```errwriter.js``` and ```logwriter.js```
-For downloading images you need to create folder in root of project and change path in ```image.json```
-For downloading voices you need to create folder in the root of project and change path in ```oga.js```
+For logs of using and error logs you need to create text files ```logs``` and ```errorlogs``` also you can change file names in ```errwriter.js``` and ```logwriter.js```.
+For downloading images you need to create folder in root of project and change path in ```image.json```.
+For downloading voices you need to create folder in the root of project and change path in ```oga.js```.
 Also you need ```config.js```  in which the api keys will be stored. For example:
 ```javascript
     export const openaiKey ='YOUR OPENAI KEY'
     export const tgKey =  'YOUR TELEGRAM KEY'
 ```
+## To do
+- [x] add readme
+- [ ] improve image generation
+- [ ] switch to gpt-4
 
+## Contributions      
+for cooperation, suggestions or questions please contact forgptjs12@gmail.com
