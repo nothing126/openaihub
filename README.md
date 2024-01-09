@@ -72,3 +72,7 @@ Also you need ```config.js```  in which the api keys will be stored. For example
 
 ## Contributions      
 for cooperation, suggestions or questions please contact forgptjs12@gmail.com
+
+## Project team
+Its my own project developed only by me
+
