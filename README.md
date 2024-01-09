@@ -10,8 +10,7 @@
   <h3 align="center">Dalle</h3>
 
   <p align="center">
-    <br />
-    <a href="https://t.me/Nonthing1571"><strong>Explore the docs »</strong></a>
+    <
     <br />
     <br />
     <a href="https://t.me/Nonthing1571">View Demo</a>
