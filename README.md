@@ -26,12 +26,18 @@
 - ## technologies
 - [JS](https://www.javascript.com/)
 - [OpenAiApi](https://openai.com/blog/openai-api)
-- [telegram Api](https://core.telegram.org/bots)
+- <div align="flex-start">
+  <a href="https://github.com/telegraf/telegraf">
+    <img src="https://github.com/nothing126/openaihub/blob/master/img/telegraf1.png" alt="axios bage" width="60" height="60">
+  </a>
 - <div align="flex-start">
   <a href="https://github.com/axios/axios">
-    <img src="https://github.com/nothing126/openaihub/blob/master/img/axios.png" alt="axios bage" width="120" height="40">
+    <img src="https://github.com/nothing126/openaihub/blob/master/img/axios.png" alt="axios bage" width="110" height="40">
   </a>
-- [fluent-ffmpeg](https://github.com/fluent-ffmpeg/node-fluent-ffmpeg)
+-  <div align="flex-start">
+  <a href="https://github.com/fluent-ffmpeg/node-fluent-ffmpeg">
+    <img src="https://github.com/nothing126/openaihub/blob/master/img/telegraf1.png" alt="axios bage" width="60" height="60">
+  </a>
 
  ## Begin
  For the bot to work correctly, you need to install the following libraries using npm:
