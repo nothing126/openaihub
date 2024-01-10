@@ -27,7 +27,10 @@
 - [JS](https://www.javascript.com/)
 - [OpenAiApi](https://openai.com/blog/openai-api)
 - [telegram Api](https://core.telegram.org/bots)
-- [axios](https://github.com/axios/axios)
+- <div align="flex-start">
+  <a href="https://github.com/nothing126/openaihub/blob/master/img/axios.png">
+    <img src="https://github.com/nothing126/openaihub/blob/master/img/axios.png" alt="axios bage" width="300" height="300">
+  </a>
 - [fluent-ffmpeg](https://github.com/fluent-ffmpeg/node-fluent-ffmpeg)
 
  ## Begin
