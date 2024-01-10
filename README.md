@@ -1,5 +1,22 @@
- # Dalle
+ <a name="readme-top"></a>
+  ----
  
+
+<div align="center">
+  <a href="[ https://github.com/nothing126/openaihub/graphs/contributors]">
+    <img src="https://img.shields.io/github/contributors/nothing126/openaihub.svg?style=for-the-badge" alt="Contributors">
+  </a>
+  <a href="https://github.com/nothing126/openaihub/stargazers">
+    <img src="https://img.shields.io/github/stars/nothing126/openaihub.svg?style=for-the-badge" alt="Stargazers">
+  </a>
+  <a href="https://github.com/nothing126/openaihub/issues">
+    <img src="https://img.shields.io/github/issues/nothing126/openaihub.svg?style=for-the-badge" alt="Issues">
+  </a>
+  <a href="https://github.com/nothing126/openaihub/network/members">
+    <img src="https://img.shields.io/github/forks/nothing126/openaihub.svg?style=for-the-badge" alt="Forks">
+  </a>
+</div>
+
  <!-- PROJECT LOGO -->
 <br />
 <div align="center">
@@ -12,16 +29,20 @@
   <p align="center">
     <br />
     <a href="https://t.me/Nonthing1571">Report Bug</a>
-    
+   
   </p>
 </div>
 
+ ----
+
 ## Content
 - [TECHONOLOGIES](#technologies)
-- [BEGIN](#begin)
+- [BEGIN](#Begin)
 - [TO DO](#to-do)
 - [CONTRIBUTIONS](#contributions)
 - [PROJECT TEAM](#project-team )
+
+ ----
 
 - ## technologies
   
@@ -49,7 +70,9 @@
 * <a href="https://github.com/fluent-ffmpeg/node-fluent-ffmpeg">
     <img src="https://github.com/nothing126/openaihub/blob/master/img/ffmpeg.jpg" alt="axios bage" width="130" height="45">
   </a>
-
+   
+   ----
+   
  ## Begin
  For the bot to work correctly, you need to install the following libraries using npm:
  
@@ -103,11 +126,13 @@ Also you need ```config.js```  in which the api keys will be stored. For example
     export const openaiKey ='YOUR OPENAI KEY'
     export const tgKey =  'YOUR TELEGRAM KEY'
 ```
+ ----
 ## To do
 - [x] add readme
 - [ ] improve image generation
 - [ ] switch to gpt-4
 
+ ----
 ## Contributions      
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
@@ -115,13 +140,39 @@ If you have a suggestion that would make this better, please fork the repo and c
 Don't forget to give the project a star! Thanks again!
 
 1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+2. Clone Your Fork:
+ ```sh
+   $ git clone <your-repository-url>
+ ```
+ ```sh
+   $ cd <your-project-name>
+ ```
+3. create future branch:
+  ```sh
+   $ git checkout -b feature/YourFeatureName
+  ```
+4. Commit changes:
+ ```sh
+    $ git commit -m 'Add some AmazingFeature'
+  ```
+5. Push Changes to Your Fork:
+ ```sh
+   $ git push origin feature/YourFeatureName
+  ```
+6.   Make pull request
+
    
 for suggestions or questions please contact forgptjs12@gmail.com
 
+ ----
 ## Project team
 Its my own project developed only by me
 
+[contributors-shield]:https://img.shields.io/github/contributors/nothing126/openaihub.svg?style=for-the-badge
+[contributors-url]: https://github.com/nothing126/openaihub/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/nothing126/openaihub.svg?style=for-the-badge
+[forks-url]:https://github.com/nothing126/openaihub/network/members
+[stars-shield]: https://img.shields.io/github/stars/nothing126/openaihub.svg?style=for-the-badge
+[stars-url]:https://github.com/nothing126/openaihub/stargazers
+[issues-shield]:https://img.shields.io/github/issues/nothing126/openaihub.svg?style=for-the-badge
+[issues-url]:https://github.com/nothing126/openaihub/issues
