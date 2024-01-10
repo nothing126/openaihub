@@ -17,33 +17,33 @@
 </div>
 
 ## Content
-- [technologies](#technologies)
-- [Begin](#begin)
-- [To do](#to-do)
-- [Contributions](#contributions)
-- [project team](#project-team )
+- [TECHONOLOGIES](#technologies)
+- [BEGIN](#begin)
+- [TO DO](#to-do)
+- [CONTRIBUTIONS](#contributions)
+- [PROJECT TEAM](#project-team )
 
 - ## technologies
 - [JS](https://www.javascript.com/)
   
   <div align="flex-start">
- * <a href="https://github.com/openai/openai-node">
-    <img src="https://github.com/nothing126/openaihub/blob/master/img/telegraf1.png" alt="axios bage" width="110" height="40">
+* <a href="https://github.com/openai/openai-node">
+    <img src="https://github.com/nothing126/openaihub/blob/master/img/openai.png" alt="axios bage" width="120" height="45">
   </a>
   
   <div align="flex-start">
- * <a href="https://github.com/telegraf/telegraf">
+* <a href="https://github.com/telegraf/telegraf">
     <img src="https://github.com/nothing126/openaihub/blob/master/img/telegraf1.png" alt="axios bage" width="60" height="60">
   </a>
   
   <div align="flex-start">
- * <a href="https://github.com/axios/axios">
-    <img src="https://github.com/nothing126/openaihub/blob/master/img/axios.png" alt="axios bage" width="110" height="40">
+* <a href="https://github.com/axios/axios">
+    <img src="https://github.com/nothing126/openaihub/blob/master/img/axios.png" alt="axios bage" width="120" height="45">
   </a>
   
-* <div align="flex-start">
-  <a href="https://github.com/fluent-ffmpeg/node-fluent-ffmpeg">
-    <img src="https://github.com/nothing126/openaihub/blob/master/img/ffmpeg.jpg" alt="axios bage" width="110" height="40">
+  <div align="flex-start">
+* <a href="https://github.com/fluent-ffmpeg/node-fluent-ffmpeg">
+    <img src="https://github.com/nothing126/openaihub/blob/master/img/ffmpeg.jpg" alt="axios bage" width="120" height="45">
   </a>
 
  ## Begin
