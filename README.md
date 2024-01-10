@@ -4,7 +4,7 @@
 
 <div align="center">
   <a href="[ https://github.com/nothing126/openaihub/graphs/contributors]">
-    <img src="https://img.shields.io/github/contributors/nothing126/openaihub.svg?style=for-the-badge" alt="Contributors">
+    <img src="https://github.com/nothing126/openaihub/graphs/contributors" alt="Contributors">
   </a>
   <a href="https://github.com/nothing126/openaihub/stargazers">
     <img src="https://img.shields.io/github/stars/nothing126/openaihub.svg?style=for-the-badge" alt="Stargazers">
