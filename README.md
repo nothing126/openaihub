@@ -24,11 +24,15 @@
 - [PROJECT TEAM](#project-team )
 
 - ## technologies
-- [JS](https://www.javascript.com/)
+  
+ <div align="flex-start">
+* <a href="https://github.com/nodejs">
+    <img src="https://github.com/nothing126/openaihub/blob/master/img/js.jpg" alt="axios bage" width="130" height="45">
+  </a>
   
   <div align="flex-start">
 * <a href="https://github.com/openai/openai-node">
-    <img src="https://github.com/nothing126/openaihub/blob/master/img/openai.png" alt="axios bage" width="120" height="45">
+    <img src="https://github.com/nothing126/openaihub/blob/master/img/openai.png" alt="axios bage" width="130" height="45">
   </a>
   
   <div align="flex-start">
@@ -38,12 +42,12 @@
   
   <div align="flex-start">
 * <a href="https://github.com/axios/axios">
-    <img src="https://github.com/nothing126/openaihub/blob/master/img/axios.png" alt="axios bage" width="120" height="45">
+    <img src="https://github.com/nothing126/openaihub/blob/master/img/axios.png" alt="axios bage" width="130" height="45">
   </a>
   
   <div align="flex-start">
 * <a href="https://github.com/fluent-ffmpeg/node-fluent-ffmpeg">
-    <img src="https://github.com/nothing126/openaihub/blob/master/img/ffmpeg.jpg" alt="axios bage" width="120" height="45">
+    <img src="https://github.com/nothing126/openaihub/blob/master/img/ffmpeg.jpg" alt="axios bage" width="130" height="45">
   </a>
 
  ## Begin
