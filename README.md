@@ -36,7 +36,7 @@
   </a>
 -  <div align="flex-start">
   <a href="https://github.com/fluent-ffmpeg/node-fluent-ffmpeg">
-    <img src="https://github.com/nothing126/openaihub/blob/master/img/telegraf1.png" alt="axios bage" width="60" height="60">
+    <img src="https://github.com/nothing126/openaihub/blob/master/img/ffmpeg.jpg" alt="axios bage" width="60" height="60">
   </a>
 
  ## Begin
