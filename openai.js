@@ -10,7 +10,8 @@ class openAI{
         USER: 'user',
         SYSTEM: 'system',
     }
-    constructor(apiKey) {
+    constructor(apiKey)
+    {
         const configuration = new Configuration({
             apiKey,
 
@@ -33,20 +34,21 @@ class openAI{
     }
 
     async transcription(filepath) {
-        try {
+        try
+        {
             const response = await this.openai.audio.transcriptions.create({
                 file: createReadStream(filepath),
                 model: 'whisper-1'
             })
             return response.text
-        }
-        catch (e)
+        } catch (e)
         {
             errToLogFile(`error while transcription, ERROR:${e}, FILE: openai.js`)
         }
     }
     async dalle(promt) {
-        try {
+        try
+        {
             const response = await this.openai.images.generate({
                 model:"dall-e-3",
                 prompt: String(promt),
@@ -55,7 +57,8 @@ class openAI{
             })
             return response.data[0].url
 
-        }catch (e){
+        }catch (e)
+        {
             errToLogFile(`error in generating img, ERROR: ${e}, FILE: openai.js`)
         }
     }

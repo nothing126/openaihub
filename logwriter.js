@@ -1,6 +1,7 @@
 import { appendFile } from 'fs/promises';
 export async function writeToLogFile(text) {
-    try {
+    try
+    {
         // Путь к файлу
         const filePath = 'logs';
 
@@ -9,7 +10,8 @@ export async function writeToLogFile(text) {
 
         // Записываем текст в файл
        await appendFile(filePath, logEntry)
-    }catch (e) {
+    }catch (e)
+    {
         await writeToLogFile(`ERROR WHILE LOG WRITING: ERROR: ${e} , FILE: logwriter.js}`)
     }
 }

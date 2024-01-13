@@ -7,7 +7,8 @@ import{errToLogFile} from "./errwriter.js";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export async function downloadImage(url, filename) {
-    try {
+    try
+    {
         const Path = resolve(__dirname, 'C:\\Users\\ajiga\\WebstormProjects\\untitled2\\img', `${filename}.png`)
         const response = await axios({
             method: 'get',
@@ -19,7 +20,8 @@ export async function downloadImage(url, filename) {
             response.data.pipe(stream)
             stream.on('finish', () => resolve(Path))
         })
-    } catch (e) {
+    } catch (e)
+    {
         errToLogFile(`error while downloading img, ERROR:${e}, FILE: image.js`)
     }
 }

@@ -9,7 +9,8 @@ import {errToLogFile} from "./errwriter.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 class OgaConverter{
-    constructor() {
+    constructor()
+    {
         ffmpeg.setFfmpegPath(installer.path)
     }
     toMp3(input,output){

@@ -1,7 +1,8 @@
 import {unlink} from 'fs/promises';
 import {errToLogFile} from "./errwriter.js";
 export async function remove_file(path){
-    try {
+    try
+    {
         await unlink(path);
     }
     catch (e)

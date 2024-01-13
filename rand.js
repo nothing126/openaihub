@@ -1,7 +1,8 @@
 import {errToLogFile} from "./errwriter.js";
 
 export async function RandN() {
-    try{
+    try
+    {
     const min = 10000000000; // Минимальное 11-значное число
     const max = 99999999999; // Максимальное 11-значное число
 

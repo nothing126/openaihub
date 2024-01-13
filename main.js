@@ -29,20 +29,24 @@ bot.command('start', async (ctx)=>{
     const userId = ctx.from.id;
 
     await writeToLogFile(`User: ${ctx.message.from.id} enter start command`)
-    try{
+    try
+    {
         const usersData = await loadUserData();
         const count = usersData[userId].messageCount
         const limit = usersData[userId].messageLimit
-        if (usersData[userId] && count < limit) {
+        if (usersData[userId] && count < limit)
+        {
                 await ctx.reply('здравствуйте, выберите режим', Markup.inlineKeyboard([
                     [Markup.button.callback('Разговор с ChatGPT', 'gpt')],
                     [Markup.button.callback('Генерация картинок', 'dalle')],
                     [Markup.button.callback('голос в текст', 'v2t')],
                 ]))
-            }else {
+            }else
+            {
                 await ctx.reply('Вы достигли лимита сообщений.');
             }
-    }catch (e) {
+    }catch (e)
+    {
         await ctx.reply('что то пошло не так, повторите попытку')
         await errToLogFile(`ERROR WHILE START COMMAND: {
         User: ${ctx.message.from.id} 
@@ -55,10 +59,12 @@ bot.command('start', async (ctx)=>{
 
 bot.action('gpt', async (ctx) => {
     ctx.session ??= INITIAL_SESSION;
-    try {
+    try
+    {
         ctx.session.mode = 'gpt';
         await ctx.reply("Отправьте свой запросдля ChatGPT в текстовом или аудио формате");
-    }catch (e) {
+    }catch (e)
+    {
         await ctx.reply('что то пошло не так, повторите попытку')
         await errToLogFile(`ERROR WHILE PROCESSING DALLE STATE: {
         User: ${ctx.message.from.id}
@@ -70,10 +76,12 @@ bot.action('gpt', async (ctx) => {
 
 bot.action('dalle', async (ctx) => {
     ctx.session ??= INITIAL_SESSION;
-    try {
+    try
+    {
         ctx.session.mode = 'dalle';
         await ctx.reply('Отправьте ваш ваш запрос в текстовом или аудио формате для генерации картинок');
-    }catch (e) {
+    }catch (e)
+    {
        await ctx.reply('что то пошло не так, повторите попытку')
         await errToLogFile(`ERROR WHILE PROCESSING DALLE STATE: {
         User: ${ctx.message.from.id} 
@@ -86,10 +94,12 @@ bot.action('dalle', async (ctx) => {
 
 bot.action('v2t', async (ctx) => {
     ctx.session ??= INITIAL_SESSION;
-    try {
+    try
+    {
         ctx.session.mode = 'v2t';
         await ctx.reply('Отправьте или перешлите голосовое сообщение для перевода голос в текст');
-    }catch (e) {
+    }catch (e)
+    {
         await ctx.reply('что то пошло не так, повторите попытку')
         await errToLogFile(`ERROR WHILE PROCESSING  V2T STATE: {
         User: ${ctx.message.from.id}
@@ -105,7 +115,8 @@ bot.on(message('text'), async (ctx) => {
         const usersData = await loadUserData();
         const count = usersData[userId].messageCount
         const limit = usersData[userId].messageLimit
-        if (usersData[userId] && count < limit) {
+        if (usersData[userId] && count < limit)
+        {
 
             ctx.session ??= INITIAL_SESSION;
 
@@ -125,10 +136,12 @@ bot.on(message('text'), async (ctx) => {
                 default:
                     await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду ' + code('/new'))
             }
-        }else{
+        }else
+        {
             ctx.reply("вы достигли лимита сообщений")
         }
-    } catch (e) {
+    } catch (e)
+    {
        await ctx.reply('что то пошло не так, повторите попытку')
         await errToLogFile(`ERROR WHILE HANDLING TEXT MESSAGE: {
         User: ${ctx.message.from.id} 
@@ -143,7 +156,8 @@ bot.on(message('voice'), async (ctx) => {
         const usersData = await loadUserData();
         const count = usersData[userId].messageCount
         const limit = usersData[userId].messageLimit
-        if (usersData[userId] && count < limit) {
+        if (usersData[userId] && count < limit)
+        {
             ctx.session ??= INITIAL_SESSION;
 
             switch (ctx.session.mode) {
@@ -162,10 +176,12 @@ bot.on(message('voice'), async (ctx) => {
                 default:
                     await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /new')
             }
-        }else {
+        }else
+        {
             ctx.reply("вы достигли лимита сообщений")
         }
-    } catch (e) {
+    } catch (e)
+    {
         await ctx.reply('что то пошло не так, повторите попытку')
         await errToLogFile(`ERROR WHILE HANDLING VOICE MESSAGE: {
         User: ${ctx.message.from.id} 
@@ -185,7 +201,8 @@ async function GPT_t(ctx){
         const usersData = await loadUserData();
         const count = usersData[userId].messageCount
         const limit = usersData[userId].messageLimit
-        if (usersData[userId] && count < limit) {
+        if (usersData[userId] && count < limit)
+        {
             await ctx.reply("принял ваш запрос, ожидайте ответа (это может занять несколько минут)")
             await plus_count(userId,1)
                 await writeToLogFile(`User: ${ctx.message.from.id} make GPT text request`)
@@ -205,10 +222,12 @@ async function GPT_t(ctx){
                         Markup.button.callback('Выйти', 'exit'),
                     ]
                 ))
-            } else {
+            } else
+            {
                 ctx.reply('Вы достигли лимита сообщений.');
             }
-        }catch (e) {
+        }catch (e)
+    {
        await ctx.reply('что то пошло не так, повторите попытку')
         await errToLogFile(`ERROR IN GPT TEXT REQUEST: {
         User: ${ctx.message.from.id} 
@@ -220,12 +239,14 @@ async function GPT_t(ctx){
 
   async function GPT_v(ctx){
         ctx.session ??= INITIAL_SESSION
-        try {
+        try
+        {
             const userId = ctx.from.id;
             const usersData = await loadUserData();
             const count = usersData[userId].messageCount
             const limit = usersData[userId].messageLimit
-            if (usersData[userId] && count < limit) {
+            if (usersData[userId] && count < limit)
+            {
                 await plus_count(userId,1)
                     await writeToLogFile(`User: ${ctx.message.from.id} make GPT voice request`)
                     await ctx.reply('сообщение получил, жду ответа от сервера (это может занять несколько минут)')
@@ -251,10 +272,12 @@ async function GPT_t(ctx){
                     await ctx.reply(String(rsp), Markup.inlineKeyboard([
                         Markup.button.callback('Выйти', 'exit'),]))
 
-                } else {
+                } else
+                {
                     ctx.reply('Вы достигли лимита сообщений.');
                 }
-        } catch(e) {
+        } catch(e)
+        {
            await ctx.reply('что то пошло не так, повторите попытку')
             await errToLogFile(`ERROR IN GPT VOICE REQUEST : {
             User: ${ctx.message.from.id}, 
@@ -265,12 +288,14 @@ async function GPT_t(ctx){
 
 async function dalle_t(ctx){
     ctx.session ??= INITIAL_SESSION
-        try {
+        try
+        {
             const userId = ctx.from.id;
             const usersData = await loadUserData();
             const count = usersData[userId].messageCount
             const limit = usersData[userId].messageLimit
-            if (usersData[userId] || count < limit) {
+            if (usersData[userId] || count < limit)
+            {
 
                 await plus_count(userId,1)
                     await writeToLogFile(`User: ${ctx.message.from.id} make dall-e text request`)
@@ -289,11 +314,13 @@ async function dalle_t(ctx){
                         ]
                     ))
                     await remove_file(image_path)
-                } else {
+                } else
+                {
                     ctx.reply('Вы достигли лимита сообщений.');
                 }
 
-        }catch (e) {
+        }catch (e)
+        {
             await ctx.reply('что то пошло не так, повторите попытку')
             await errToLogFile(`ERROR IN DALLE TEXT REQUEST: {
             User: ${ctx.message.from.id} 
@@ -303,14 +330,17 @@ async function dalle_t(ctx){
     }
 
 
-async function dalle_v(ctx){
+async function dalle_v(ctx)
+{
       ctx.session ??= INITIAL_SESSION
-        try {
+        try
+        {
             const userId = ctx.from.id;
             const usersData = await loadUserData();
             const count = usersData[userId].messageCount
             const limit = usersData[userId].messageLimit
-            if (usersData[userId] || count < limit) {
+            if (usersData[userId] || count < limit)
+            {
 
                 await plus_count(userId,1)
                     ctx.reply(code('генерация картинки...'))
@@ -336,7 +366,8 @@ async function dalle_v(ctx){
                 } else {
                     ctx.reply('Вы достигли лимита сообщений.');
                 }
-        }catch (e) {
+        }catch (e)
+        {
             await ctx.reply('что то пошло не так, повторите попытку')
             await errToLogFile(`ERROR IN DALLE VOICE REQUEST: {User: ${ctx.message.from.id} 
             ERROR: ${e} , 
@@ -347,12 +378,14 @@ async function dalle_v(ctx){
 
 async function v2t_v(ctx){
     ctx.session ??= INITIAL_SESSION
-        try {
+        try
+        {
             const userId = ctx.from.id;
             const usersData = await loadUserData();
             const count = usersData[userId].messageCount
             const limit = usersData[userId].messageLimit
-            if (usersData[userId] || count < limit) {
+            if (usersData[userId] || count < limit)
+            {
 
                 await plus_count(userId,1)
                     await writeToLogFile(`User: ${ctx.message.from.id} make v2t voice request`)
@@ -373,7 +406,8 @@ async function v2t_v(ctx){
                     ctx.reply('Вы достигли лимита сообщений.');
                 }
 
-        }catch (e){
+        }catch (e)
+        {
             ctx.reply('что то пошло не так, повторите попытку')
             await errToLogFile(`ERROR IN V2T VOICE REQUEST: {
             User: ${ctx.message.from.id} 
@@ -383,7 +417,8 @@ async function v2t_v(ctx){
     }
 async function v2t_t (ctx){
     ctx.session ??= INITIAL_SESSION
-    try {
+    try
+    {
         const userId = ctx.from.id;
         const usersData = await loadUserData();
         const count = usersData[userId].messageCount
@@ -396,11 +431,13 @@ async function v2t_t (ctx){
                     Markup.button.callback('Выйти', 'exit'),
                 ]
             ))
-        }else{
+        }else
+        {
             ctx.reply('Вы достигли лимита сообщений.');
         }
 
-        }catch (e) {
+        }catch (e)
+    {
         await ctx.reply('что то пошло не так, повторите попытку')
         await errToLogFile(`ERROR IN V2T TEXT REQUEST: {
         User: ${ctx.message.from.id}
@@ -411,14 +448,16 @@ async function v2t_t (ctx){
 
 bot.action('exit',  async (ctx) => {
     ctx.session = INITIAL_SESSION
-    try {
+    try
+    {
         await ctx.reply('Вы вышли из режима. Выберите режим:', Markup.inlineKeyboard([
             [Markup.button.callback('Разговор с ChatGPT', 'gpt')],
             [Markup.button.callback('Генерация картинок', 'dalle')],
             [Markup.button.callback('голос в текст', 'v2t')],
         ]
         ))
-    }catch (e) {
+    }catch (e)
+    {
         await ctx.reply('что то пошло не так, повторите попытку')
        await errToLogFile(`ERROR IN V2T TEXT REQUEST: {
        User: ${ctx.message.from.id} 
