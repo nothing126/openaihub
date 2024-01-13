@@ -33,7 +33,6 @@ bot.command('start', async (ctx)=>{
         const usersData = await loadUserData();
         const count = usersData[userId].messageCount
         const limit = usersData[userId].messageLimit
-        await plus_count(userId,1)
         if (usersData[userId] && count < limit) {
                 await ctx.reply('здравствуйте, выберите режим', Markup.inlineKeyboard([
                     [Markup.button.callback('Разговор с ChatGPT', 'gpt')],
@@ -102,23 +101,32 @@ bot.action('v2t', async (ctx) => {
 
 bot.on(message('text'), async (ctx) => {
     try {
-        ctx.session ??= INITIAL_SESSION;
+        const userId = ctx.from.id;
+        const usersData = await loadUserData();
+        const count = usersData[userId].messageCount
+        const limit = usersData[userId].messageLimit
+        if (usersData[userId] && count < limit) {
 
-        switch (ctx.session.mode) {
-            case 'gpt':
-                await GPT_t(ctx)
-                break;
+            ctx.session ??= INITIAL_SESSION;
 
-            case 'dalle':
-                await dalle_t(ctx)
-                break;
+            switch (ctx.session.mode) {
+                case 'gpt':
+                    await GPT_t(ctx)
+                    break;
 
-            case 'v2t':
-                await v2t_t(ctx)
-                break;
+                case 'dalle':
+                    await dalle_t(ctx)
+                    break;
 
-            default:
-                await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду '+code('/new'))
+                case 'v2t':
+                    await v2t_t(ctx)
+                    break;
+
+                default:
+                    await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду ' + code('/new'))
+            }
+        }else{
+            ctx.reply("вы достигли лимита сообщений")
         }
     } catch (e) {
        await ctx.reply('что то пошло не так, повторите попытку')
@@ -126,31 +134,36 @@ bot.on(message('text'), async (ctx) => {
         User: ${ctx.message.from.id} 
         ERROR: ${e} ,
          FILE: main.js}`)
-
-
-    }
-});
+    }});
 
 
 bot.on(message('voice'), async (ctx) => {
     try {
-        ctx.session ??= INITIAL_SESSION;
+        const userId = ctx.from.id;
+        const usersData = await loadUserData();
+        const count = usersData[userId].messageCount
+        const limit = usersData[userId].messageLimit
+        if (usersData[userId] && count < limit) {
+            ctx.session ??= INITIAL_SESSION;
 
-        switch (ctx.session.mode) {
-            case 'gpt':
-                await GPT_v(ctx)
-                break;
+            switch (ctx.session.mode) {
+                case 'gpt':
+                    await GPT_v(ctx)
+                    break;
 
-            case 'dalle':
-                await dalle_v(ctx)
-                break;
+                case 'dalle':
+                    await dalle_v(ctx)
+                    break;
 
-            case 'v2t':
-               await v2t_v(ctx)
-                break;
+                case 'v2t':
+                    await v2t_v(ctx)
+                    break;
 
-            default:
-                await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /new')
+                default:
+                    await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /new')
+            }
+        }else {
+            ctx.reply("вы достигли лимита сообщений")
         }
     } catch (e) {
         await ctx.reply('что то пошло не так, повторите попытку')
