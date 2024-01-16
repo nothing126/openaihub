@@ -18,7 +18,8 @@ class openAI{
         });
         this.openai = new OpenAIApi(configuration)
     }
-    async chat_gpt(messages) {
+    async chat_gpt(messages)
+    {
         try
         {
             const response= await this.openai.chat.completions.create({
@@ -33,7 +34,8 @@ class openAI{
         }
     }
 
-    async transcription(filepath) {
+    async transcription(filepath)
+    {
         try
         {
             const response = await this.openai.audio.transcriptions.create({
@@ -46,7 +48,8 @@ class openAI{
            await errToLogFile(`error while transcription, ERROR:${e}, FILE: openai.js`)
         }
     }
-    async dalle(promt) {
+    async dalle(promt)
+    {
         try
         {
             const response = await this.openai.images.generate({
@@ -62,7 +65,8 @@ class openAI{
            await errToLogFile(`error in generating img, ERROR: ${e}, FILE: openai.js`)
         }
     }
-    async gptvision(image_url, text) {
+    async gptvision(image_url, text)
+    {
         try {
             const response = await this.openai.chat.completions.create({
                 model: "gpt-4-vision-preview",
@@ -84,7 +88,7 @@ class openAI{
                         ],
                     },
                 ],
-                max_tokens: 1000
+                max_tokens: 1500
             });
             return response.choices[0];
         } catch (e)

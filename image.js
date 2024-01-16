@@ -22,6 +22,6 @@ export async function downloadImage(url, filename) {
         })
     } catch (e)
     {
-        errToLogFile(`error while downloading img, ERROR:${e}, FILE: image.js`)
+        await errToLogFile(`error while downloading img, ERROR:${e}, FILE: image.js`)
     }
 }

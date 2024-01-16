@@ -53,7 +53,7 @@ class OgaConverter{
         }
         catch (e)
         {
-            errToLogFile(`error while creating oga, ERROR:${e}, FILE: oga.js`)
+            await errToLogFile(`error while creating oga, ERROR:${e}, FILE: oga.js`)
         }
     }
 }

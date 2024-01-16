@@ -7,6 +7,6 @@ export async function remove_file(path){
     }
     catch (e)
     {
-        errToLogFile(`error while removing file, ERROR${e}, FILE: remove.js`);
+        await errToLogFile(`error while removing file, ERROR${e}, FILE: remove.js`);
     }
 }

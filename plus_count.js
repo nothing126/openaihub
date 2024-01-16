@@ -1,7 +1,9 @@
 import { readFileSync, writeFileSync } from 'fs';
 import { errToLogFile } from './errwriter.js';
+import {writeToLogFile} from "./logwriter.js";
 
-export async function plus_count(userId, incrementBy) {
+export async function plus_count(userId, incrementBy)
+{
     const userDataPath = './userIds.json'; // Replace with the actual path
 
     try
@@ -19,13 +21,13 @@ export async function plus_count(userId, incrementBy) {
             // Write updated data back to file
             writeFileSync(userDataPath, JSON.stringify(usersData, null, 2), 'utf-8');
 
-            console.log(`messageCount for user ${userId} increased by ${incrementBy}`);
+            writeToLogFile(`messageCount for user ${userId} increased by ${incrementBy}`);
         } else
         {
-            console.log(`User with id ${userId} not found in the file`);
+            errToLogFile(`User with id ${userId} not found in the file`);
         }
-    } catch (error)
+    } catch (e)
     {
-        await errToLogFile('Error updating messageCount:', error);
+        await errToLogFile('Error updating messageCount:', e);
     }
 }

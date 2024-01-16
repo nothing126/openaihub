@@ -7,7 +7,8 @@ export async function RandN() {
     const max = 99999999999; // Максимальное 11-значное число
 
     return Math.floor(Math.random() * (max - min + 1)) + min;
-}catch (e) {
-    errToLogFile(`error while generating filename, ERROR: ${e}, FILE: rand.js`)
+}catch (e)
+    {
+    await errToLogFile(`error while generating filename, ERROR: ${e}, FILE: rand.js`)
     }
 }
