@@ -18,18 +18,18 @@ class openAI{
         });
         this.openai = new OpenAIApi(configuration)
     }
-    async chat(messages) {
+    async chat_gpt(messages) {
         try
         {
             const response= await this.openai.chat.completions.create({
-                model:'gpt-3.5-turbo',
+                model:'gpt-4-32k',
                 messages
             })
             return response.choices[0].message.content
         }
         catch (e)
         {
-            errToLogFile(`error while gpt chat, ERROR:${e}, FILE: openai.js `)
+            await errToLogFile(`error while gpt chat, ERROR:${e}, FILE: openai.js `)
         }
     }
 
@@ -43,7 +43,7 @@ class openAI{
             return response.text
         } catch (e)
         {
-            errToLogFile(`error while transcription, ERROR:${e}, FILE: openai.js`)
+           await errToLogFile(`error while transcription, ERROR:${e}, FILE: openai.js`)
         }
     }
     async dalle(promt) {
@@ -59,7 +59,37 @@ class openAI{
 
         }catch (e)
         {
-            errToLogFile(`error in generating img, ERROR: ${e}, FILE: openai.js`)
+           await errToLogFile(`error in generating img, ERROR: ${e}, FILE: openai.js`)
+        }
+    }
+    async gptvision(image_url, text) {
+        try {
+            const response = await this.openai.chat.completions.create({
+                model: "gpt-4-vision-preview",
+                messages: [
+                    {
+                        role: "user",
+                        content:
+                            [
+                            { type: "text",
+                                text: text },
+                            {
+                                type: "image_url",
+                                image_url:
+                                    {
+                                    url: image_url,
+                                    detail: "high"
+                                },
+                            },
+                        ],
+                    },
+                ],
+                max_tokens: 1000
+            });
+            return response.choices[0];
+        } catch (e)
+        {
+            await errToLogFile(`error in analyzing img, ERROR: ${e}, FILE: openai.js`)
         }
     }
 }

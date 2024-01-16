@@ -39,7 +39,9 @@ bot.command('start', async (ctx)=>{
                 await ctx.reply('здравствуйте, выберите режим', Markup.inlineKeyboard([
                     [Markup.button.callback('Разговор с ChatGPT', 'gpt')],
                     [Markup.button.callback('Генерация картинок', 'dalle')],
+                    [Markup.button.callback('анализ картинки', 'vision')],
                     [Markup.button.callback('голос в текст', 'v2t')],
+
                 ]))
             }else
             {
@@ -107,6 +109,21 @@ bot.action('v2t', async (ctx) => {
          FILE: main.js}`)
     }
 });
+bot.action('vision', async (ctx) => {
+    ctx.session ??= INITIAL_SESSION;
+    try
+    {
+        ctx.session.mode = 'vision';
+        await ctx.reply('отправьте картинку для анализа');
+    }catch (e)
+    {
+        await ctx.reply('что то пошло не так, повторите попытку')
+        await errToLogFile(`ERROR WHILE PROCESSING  IMAGE STATE: {
+        User: ${ctx.message.from.id}
+         ERROR: ${e} , 
+         FILE: main.js}`)
+    }
+});
 
 
 bot.on(message('text'), async (ctx) => {
@@ -131,6 +148,10 @@ bot.on(message('text'), async (ctx) => {
 
                 case 'v2t':
                     await v2t_t(ctx)
+                    break;
+
+                case 'vision':
+                    await vision_t(ctx)
                     break;
 
                 default:
@@ -173,6 +194,10 @@ bot.on(message('voice'), async (ctx) => {
                     await v2t_v(ctx)
                     break;
 
+                case 'vision':
+                    await vision_v(ctx)
+                    break;
+
                 default:
                     await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /new')
             }
@@ -191,12 +216,127 @@ bot.on(message('voice'), async (ctx) => {
     }
 });
 
+bot.on(message('photo'), async (ctx)=>{
+    ctx.session ??= INITIAL_SESSION;
+    try {
+        switch (ctx.session.mode) {
+            case 'vision':
+                await get_href(ctx)
+                break;
+        }
+    }catch (e) {
+        await ctx.reply('что то пошло не так, повторите попытку')
+        await errToLogFile(`ERROR WHILE HANDLING PICTURE: {
+        User: ${ctx.message.from.id} 
+        ERROR: ${e} , 
+        FILE: main.js}`)
+    }
+})
 
+async function vision_t(ctx){
+    ctx.session ??= INITIAL_SESSION;
+try 
+{
+    const userId = ctx.from.id;
+    const usersData = await loadUserData();
+    const count = usersData[userId].messageCount
+    const limit = usersData[userId].messageLimit
+    if (usersData[userId] && count < limit)
+    {
+        await plus_count(userId, 1)
+        await writeToLogFile(`User: ${ctx.message.from.id} make GPT-vision text request`)
+        await ctx.reply("запрос принял, ожидайте")
+        ctx.session.messages.push({
+            text: ctx.message.text
+        })
+        const resp = await openai.gptvision(ctx.session.messages[0].link, ctx.session.messages[1].text)
+        await ctx.reply(resp.message.content, Markup.inlineKeyboard([
+                Markup.button.callback('Выйти', 'exit'),
+            ]
+        ))
+    }else
+    {
+    ctx.reply('Вы достигли лимита сообщений.');
+     }
+}catch (e)
+{
+    await ctx.reply('что то пошло не так, повторите попытку')
+    await errToLogFile(`ERROR WHILE TEXT REQUEST TO GPT-VISION: {
+        User: ${ctx.message.from.id} 
+        ERROR: ${e} , 
+        FILE: main.js}`)
+
+}
+}
+
+async function vision_v(ctx){
+    ctx.session ??= INITIAL_SESSION;
+    try
+    {
+    const userId = ctx.from.id;
+    const usersData = await loadUserData();
+    const count = usersData[userId].messageCount
+    const limit = usersData[userId].messageLimit
+    if (usersData[userId] && count < limit)
+    {
+        await ctx.reply("запрос принял, ожидайте")
+        await plus_count(userId, 1)
+        const link = await ctx.telegram.getFileLink(ctx.message.voice.file_id)
+        const user_id = String(ctx.message.from.id)
+        const ogaPath = await oga.create(link.href, user_id)
+        const filename = await RandN()
+        const mp3Path = await oga.toMp3(ogaPath, filename)
+        const txt = await openai.transcription(mp3Path)
+        await ctx.reply(`Ваш запрос: ${String(txt)}`)
+        ctx.session.messages.push({
+            text: txt
+
+        })
+        const resp = await openai.gptvision(ctx.session.messages[0].link, ctx.session.messages[1].text)
+        await ctx.reply(resp.message.content, Markup.inlineKeyboard([
+                Markup.button.callback('Выйти', 'exit'),
+            ]
+        ))
+    }else
+    {
+        ctx.reply("вы достигли лимита сообщений")
+    }
+
+}catch (e) {
+    await ctx.reply("что то пошло не так, повторите попытку")
+    await errToLogFile(`ERROR WHILE VOICE REQUEST TO GPT-VISION: {
+        User: ${ctx.message.from.id} 
+        ERROR: ${e} , 
+        FILE: main.js}`)
+}
+}
+async function get_href(ctx){
+    try
+    {
+        ctx.session ??= INITIAL_SESSION
+
+        await ctx.reply("получил фотографию")
+        const link = await ctx.telegram.getFileLink(ctx.message.photo[0].file_id);
+        const link1= link.href
+        await ctx.reply("отправьте свой запрос")
+        ctx.session.messages.push({
+            link: link1
+        })
+
+    }catch (e)
+    {
+        await ctx.reply('что то пошло не так, повторите попытку')
+        await errToLogFile(`ERROR WHILE RECEIVING HREF: {
+        User: ${ctx.message.from.id} 
+        ERROR: ${e} , 
+        FILE: main.js}`)
+    }
+
+}
 async function GPT_t(ctx){
     ctx.session ??= INITIAL_SESSION
-
-
-    try {
+    try
+    {
         const userId = ctx.from.id;
         const usersData = await loadUserData();
         const count = usersData[userId].messageCount
@@ -212,7 +352,7 @@ async function GPT_t(ctx){
                     content: ctx.message.text
                 })
 
-                const rsp = await openai.chat(ctx.session.messages);
+                const rsp = await openai.chat_gpt(ctx.session.messages);
                 ctx.session.messages.push({
                     role: openai.roles.ASSISTANT,
                     content: rsp
@@ -247,7 +387,7 @@ async function GPT_t(ctx){
             const limit = usersData[userId].messageLimit
             if (usersData[userId] && count < limit)
             {
-                await plus_count(userId,1)
+                    await plus_count(userId,1)
                     await writeToLogFile(`User: ${ctx.message.from.id} make GPT voice request`)
                     await ctx.reply('сообщение получил, жду ответа от сервера (это может занять несколько минут)')
                     const link = await ctx.telegram.getFileLink(ctx.message.voice.file_id)
@@ -263,7 +403,7 @@ async function GPT_t(ctx){
                         content: txt
                     })
 
-                    const rsp = await openai.chat(ctx.session.messages)
+                    const rsp = await openai.chat_gpt(ctx.session.messages)
                     ctx.session.messages.push({
                         role: openai.roles.ASSISTANT,
                         content: rsp
@@ -341,7 +481,6 @@ async function dalle_v(ctx)
             const limit = usersData[userId].messageLimit
             if (usersData[userId] || count < limit)
             {
-
                 await plus_count(userId,1)
                     ctx.reply(code('генерация картинки...'))
                     await writeToLogFile(`User: ${ctx.message.from.id} make dall-e voice request`)
@@ -370,6 +509,7 @@ async function dalle_v(ctx)
         {
             await ctx.reply('что то пошло не так, повторите попытку')
             await errToLogFile(`ERROR IN DALLE VOICE REQUEST: {User: ${ctx.message.from.id} 
+            User: ${ctx.message.from.id} 
             ERROR: ${e} , 
             FILE: main.js}`)
         }
@@ -453,7 +593,8 @@ bot.action('exit',  async (ctx) => {
         await ctx.reply('Вы вышли из режима. Выберите режим:', Markup.inlineKeyboard([
             [Markup.button.callback('Разговор с ChatGPT', 'gpt')],
             [Markup.button.callback('Генерация картинок', 'dalle')],
-            [Markup.button.callback('голос в текст', 'v2t')],
+                [Markup.button.callback('анализ картинки', 'vision')],
+                [Markup.button.callback('голос в текст', 'v2t')],
         ]
         ))
     }catch (e)
@@ -466,7 +607,7 @@ bot.action('exit',  async (ctx) => {
     }
 })
 
-bot.launch()
+bot.launch().then(r => console.log("bot started successful",r))
 
 process.once('SIGINT',() => bot.stop('SIGINT'));
 process.once('SIGTERM',() => bot.stop('SIGTERM'))
