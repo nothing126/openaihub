@@ -23,7 +23,7 @@ class openAI{
         try
         {
             const response= await this.openai.chat.completions.create({
-                model:'gpt-4-32k',
+                model:'gpt-4',
                 messages
             })
             return response.choices[0].message.content
@@ -48,6 +48,7 @@ class openAI{
            await errToLogFile(`error while transcription, ERROR:${e}, FILE: openai.js`)
         }
     }
+
     async dalle(promt)
     {
         try
@@ -65,6 +66,7 @@ class openAI{
            await errToLogFile(`error in generating img, ERROR: ${e}, FILE: openai.js`)
         }
     }
+
     async gptvision(image_url, text)
     {
         try {
