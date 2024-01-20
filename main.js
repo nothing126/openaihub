@@ -49,7 +49,7 @@ bot.command('start', async (ctx)=>{
             }
     }catch (e)
     {
-        await ctx.reply('что то пошло не так, повторите попытку')
+        await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start')
         await errToLogFile(`ERROR WHILE START COMMAND: {
         User: ${ctx.message.from.id} 
         ERROR: ${e} , 
@@ -67,7 +67,7 @@ bot.action('gpt', async (ctx) => {
         await ctx.reply("Отправьте свой запросдля ChatGPT в текстовом или аудио формате");
     }catch (e)
     {
-        await ctx.reply('что то пошло не так, повторите попытку')
+        await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start')
         await errToLogFile(`ERROR WHILE PROCESSING DALLE STATE: {
         User: ${ctx.message.from.id}
          ERROR: ${e} ,
@@ -84,7 +84,7 @@ bot.action('dalle', async (ctx) => {
         await ctx.reply('Отправьте ваш ваш запрос в текстовом или аудио формате для генерации картинок');
     }catch (e)
     {
-       await ctx.reply('что то пошло не так, повторите попытку')
+        await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start')
         await errToLogFile(`ERROR WHILE PROCESSING DALLE STATE: {
         User: ${ctx.message.from.id} 
         ERROR: ${e} , 
@@ -102,7 +102,7 @@ bot.action('v2t', async (ctx) => {
         await ctx.reply('Отправьте или перешлите голосовое сообщение для перевода голос в текст');
     }catch (e)
     {
-        await ctx.reply('что то пошло не так, повторите попытку')
+        await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start')
         await errToLogFile(`ERROR WHILE PROCESSING  V2T STATE: {
         User: ${ctx.message.from.id}
          ERROR: ${e} , 
@@ -117,7 +117,7 @@ bot.action('vision', async (ctx) => {
         await ctx.reply('отправьте картинку для анализа');
     }catch (e)
     {
-        await ctx.reply('что то пошло не так, повторите попытку')
+        await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start')
         await errToLogFile(`ERROR WHILE PROCESSING  IMAGE STATE: {
         User: ${ctx.message.from.id}
          ERROR: ${e} , 
@@ -155,7 +155,7 @@ bot.on(message('text'), async (ctx) => {
                     break;
 
                 default:
-                    await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду ' + code('/new'))
+                    await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start')
             }
         }else
         {
@@ -163,7 +163,7 @@ bot.on(message('text'), async (ctx) => {
         }
     } catch (e)
     {
-       await ctx.reply('что то пошло не так, повторите попытку')
+        await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start')
         await errToLogFile(`ERROR WHILE HANDLING TEXT MESSAGE: {
         User: ${ctx.message.from.id} 
         ERROR: ${e} ,
@@ -207,7 +207,7 @@ bot.on(message('voice'), async (ctx) => {
         }
     } catch (e)
     {
-        await ctx.reply('что то пошло не так, повторите попытку')
+        await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start')
         await errToLogFile(`ERROR WHILE HANDLING VOICE MESSAGE: {
         User: ${ctx.message.from.id} 
         ERROR: ${e} , 
@@ -225,7 +225,7 @@ bot.on(message('photo'), async (ctx)=>{
                 break;
         }
     }catch (e) {
-        await ctx.reply('что то пошло не так, повторите попытку')
+        await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start')
         await errToLogFile(`ERROR WHILE HANDLING PICTURE: {
         User: ${ctx.message.from.id} 
         ERROR: ${e} , 
@@ -260,7 +260,7 @@ try
      }
 }catch (e)
 {
-    await ctx.reply('что то пошло не так, повторите попытку')
+    await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start')
     await errToLogFile(`ERROR WHILE TEXT REQUEST TO GPT-VISION: {
         User: ${ctx.message.from.id} 
         ERROR: ${e} , 
@@ -303,8 +303,8 @@ async function vision_v(ctx){
     }
 
 }catch (e) {
-    await ctx.reply("что то пошло не так, повторите попытку")
-    await errToLogFile(`ERROR WHILE VOICE REQUEST TO GPT-VISION: {
+        await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start')
+        await errToLogFile(`ERROR WHILE VOICE REQUEST TO GPT-VISION: {
         User: ${ctx.message.from.id} 
         ERROR: ${e} , 
         FILE: main.js}`)
@@ -314,7 +314,7 @@ async function get_href(ctx){
     try
     {
         ctx.session ??= INITIAL_SESSION
-
+        ctx.session.messages.splice(0, ctx.session.messages.length);
         await ctx.reply("получил фотографию")
         const link = await ctx.telegram.getFileLink(ctx.message.photo[0].file_id);
         const link1= link.href
@@ -325,7 +325,7 @@ async function get_href(ctx){
 
     }catch (e)
     {
-        await ctx.reply('что то пошло не так, повторите попытку')
+        await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start')
         await errToLogFile(`ERROR WHILE RECEIVING HREF: {
         User: ${ctx.message.from.id} 
         ERROR: ${e} , 
@@ -338,6 +338,7 @@ async function GPT_t(ctx){
     try
     {
         const userId = ctx.from.id;
+        ctx.session.messages.splice(0, ctx.session.messages.length);
         const usersData = await loadUserData();
         const count = usersData[userId].messageCount
         const limit = usersData[userId].messageLimit
@@ -368,7 +369,7 @@ async function GPT_t(ctx){
             }
         }catch (e)
     {
-       await ctx.reply('что то пошло не так, повторите попытку')
+        await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start')
         await errToLogFile(`ERROR IN GPT TEXT REQUEST: {
         User: ${ctx.message.from.id} 
         ERROR: ${e} ,
@@ -381,7 +382,9 @@ async function GPT_t(ctx){
         ctx.session ??= INITIAL_SESSION
         try
         {
+
             const userId = ctx.from.id;
+            ctx.session.messages.splice(0, ctx.session.messages.length);
             const usersData = await loadUserData();
             const count = usersData[userId].messageCount
             const limit = usersData[userId].messageLimit
@@ -418,7 +421,7 @@ async function GPT_t(ctx){
                 }
         } catch(e)
         {
-           await ctx.reply('что то пошло не так, повторите попытку')
+            await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start')
             await errToLogFile(`ERROR IN GPT VOICE REQUEST : {
             User: ${ctx.message.from.id}, 
             ERROR: ${e} , 
@@ -431,6 +434,7 @@ async function dalle_t(ctx){
         try
         {
             const userId = ctx.from.id;
+            ctx.session.messages.splice(0, ctx.session.messages.length);
             const usersData = await loadUserData();
             const count = usersData[userId].messageCount
             const limit = usersData[userId].messageLimit
@@ -461,7 +465,7 @@ async function dalle_t(ctx){
 
         }catch (e)
         {
-            await ctx.reply('что то пошло не так, повторите попытку')
+            await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start')
             await errToLogFile(`ERROR IN DALLE TEXT REQUEST: {
             User: ${ctx.message.from.id} 
             ERROR: ${e} ,
@@ -476,6 +480,7 @@ async function dalle_v(ctx)
         try
         {
             const userId = ctx.from.id;
+            ctx.session.messages.splice(0, ctx.session.messages.length);
             const usersData = await loadUserData();
             const count = usersData[userId].messageCount
             const limit = usersData[userId].messageLimit
@@ -507,7 +512,7 @@ async function dalle_v(ctx)
                 }
         }catch (e)
         {
-            await ctx.reply('что то пошло не так, повторите попытку')
+            await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start')
             await errToLogFile(`ERROR IN DALLE VOICE REQUEST: {User: ${ctx.message.from.id} 
             User: ${ctx.message.from.id} 
             ERROR: ${e} , 
@@ -521,6 +526,7 @@ async function v2t_v(ctx){
         try
         {
             const userId = ctx.from.id;
+            ctx.session.messages.splice(0, ctx.session.messages.length);
             const usersData = await loadUserData();
             const count = usersData[userId].messageCount
             const limit = usersData[userId].messageLimit
@@ -548,7 +554,7 @@ async function v2t_v(ctx){
 
         }catch (e)
         {
-            ctx.reply('что то пошло не так, повторите попытку')
+            await ctx.reply('что то пошло не так, повторите попытку')
             await errToLogFile(`ERROR IN V2T VOICE REQUEST: {
             User: ${ctx.message.from.id} 
             ERROR: ${e} , 
@@ -560,6 +566,7 @@ async function v2t_t (ctx){
     try
     {
         const userId = ctx.from.id;
+        ctx.session.messages.splice(0, ctx.session.messages.length);
         const usersData = await loadUserData();
         const count = usersData[userId].messageCount
         const limit = usersData[userId].messageLimit
