@@ -3,3 +3,6 @@
 /package.json/
 /package-lock.json/
 /voices/
+/userIds.json/
+/logs/
+/errorlogs/
