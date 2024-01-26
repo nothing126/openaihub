@@ -36,8 +36,8 @@ export async function remove_user(filePath, jsonKey){
 
         // Запись изменений обратно в файл
         await fsPromises.writeFile(filePath, JSON.stringify(graph, null, 2));
-       writeToLogFile(`Ключ "${jsonKey}" был успешно удален из файла`);
+       await writeToLogFile(`Ключ "${jsonKey}" был успешно удален из файла`);
     } catch (e) {
-        errToLogFile('Произошла ошибка:', e);
+       await errToLogFile('Произошла ошибка:', e);
     }
 }
