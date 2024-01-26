@@ -15,6 +15,7 @@ import{writeToLogFile} from './logwriter.js'
 import {errToLogFile} from "./errwriter.js";
 import{loadUserData} from'./loaddata.js';
 import {plus_count}from "./plus_count.js"
+import {remove_user} from "./remove_user.js";
 
 const bot = new Telegraf(tgKey)
 
@@ -23,6 +24,7 @@ const INITIAL_SESSION= {
 }
 
 bot.use(session())
+
 
 bot.command('start', async (ctx)=>{
     ctx.session = INITIAL_SESSION
@@ -55,6 +57,49 @@ bot.command('start', async (ctx)=>{
         ERROR: ${e} , 
         FILE: main.js}`)
 
+    }
+})
+
+bot.command('limit', async (ctx)=>{
+    ctx.session= INITIAL_SESSION
+    const user_id = ctx.from.id
+    try{
+    if (user_id == '1200103539' ){
+    ctx.reply("вы вошли в режим администратора" , Markup.inlineKeyboard([
+        [Markup.button.callback('удалить пользователя', 'delete_user')],
+        [Markup.button.callback('добавить пользователя', 'add_user')],
+        [Markup.button.callback('повысить лимит пользователя', 'increase_limit')],
+    ]))
+    }else{
+         await ctx.reply("кажется у вас недостаточно прав для совершения это действия, прошу обратиться к администратору")
+    }
+    }catch (e) {
+        await ctx.reply("что-то не так")
+         await errToLogFile(`ERROR WHILE ADMIN COMMAND (LIMIT) COMMAND: {
+        User: ${ctx.message.from.id} 
+        ERROR: ${e} , 
+        FILE: main.js}`
+    )
+    }
+})
+
+bot.action('delete_user', async (ctx)=>{
+    ctx.session ??= INITIAL_SESSION;
+    try {
+        ctx.session.mode = 'delete_user'
+        await ctx.reply("выбери кого удалить")
+        const userData = await loadUserData();
+        for (const key in userData) {
+            if (!isNaN(Number(key))) { // Проверяем, является ли ключ числом
+                await ctx.reply(`пользователь: ${key} `);
+            }
+        }
+    }catch (e) {
+        await ctx.reply('Что-то пошло не так')
+        await errToLogFile(`ERROR WHILE PROCESSING DELETE USER STATE: {
+        User: ${ctx.message.from.id}
+         ERROR: ${e} ,
+          FILE: main.js}`)
     }
 })
 
@@ -152,6 +197,9 @@ bot.on(message('text'), async (ctx) => {
 
                 case 'vision':
                     await vision_t(ctx)
+                    break;
+                case 'delete_user':
+                    await delete_user(ctx)
                     break;
 
                 default:
@@ -267,6 +315,27 @@ try
         FILE: main.js}`)
 
 }
+}
+
+async function delete_user(ctx){
+    ctx.session ??= INITIAL_SESSION;
+    try{
+        const text = ctx.message.text
+        try {
+            await remove_user('./userIds.json', text)
+            ctx.reply("пользователь успешно удален")
+        }catch (e) {
+            ctx.reply("действие не выполнено, повторите попытку")
+        }
+
+    }catch (e) {
+      await ctx.reply("что то пошло не так")
+        await errToLogFile(`ERROR WHILE DELETING USER: {
+        User: ${ctx.message.from.id} 
+        ERROR: ${e} , 
+        FILE: main.js}`)
+
+    }
 }
 
 async function vision_v(ctx){
