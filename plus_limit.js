@@ -24,7 +24,7 @@ export async function plus_limit(userId, incrementBy)
            await writeToLogFile(`messageCount for user ${userId} increased by ${incrementBy}`);
         } else
         {
-            await rrToLogFile(`User with id ${userId} not found in the file`);
+            await errToLogFile(`User with id ${userId} not found in the file`);
         }
     } catch (e)
     {

@@ -13,10 +13,13 @@ import {  tgKey } from './config.js';
 import {message} from "telegraf/filters";
 import{writeToLogFile} from './logwriter.js'
 import {errToLogFile} from "./errwriter.js";
+
 import{loadUserData} from'./loaddata.js';
 import {plus_count}from "./plus_count.js"
 import {remove_user} from "./remove_user.js";
+
 import {plus_limit} from "./plus_limit.js";
+import {addUser} from "./new_user.js";
 
 const bot = new Telegraf(tgKey)
 
@@ -61,7 +64,7 @@ bot.command('start', async (ctx)=>{
     }
 })
 
-bot.command('limit', async (ctx)=>{
+bot.command('admin', async (ctx)=>{
     ctx.session= INITIAL_SESSION
     const user_id = ctx.from.id
     try{
@@ -70,6 +73,7 @@ bot.command('limit', async (ctx)=>{
         [Markup.button.callback('удалить пользователя', 'delete_user')],
         [Markup.button.callback('добавить пользователя', 'add_user')],
         [Markup.button.callback('повысить лимит пользователя', 'increase_limit')],
+        [Markup.button.callback('список пользователей', 'user_list')]
     ]))
     }else{
          await ctx.reply("кажется у вас недостаточно прав для совершения это действия, прошу обратиться к администратору")
@@ -91,7 +95,7 @@ bot.action('delete_user', async (ctx)=>{
         await ctx.reply("выбери кого удалить")
         const userData = await loadUserData();
         for (const key in userData) {
-            if (!isNaN(Number(key))) { // Проверяем, является ли ключ числом
+            if (!isNaN(Number(key))) {
                 await ctx.reply(`пользователь: ${key} `);
             }
         }
@@ -111,7 +115,7 @@ bot.action('increase_limit', async (ctx)=>{
         await ctx.reply("для кого повысить лимит")
         const userData = await loadUserData();
         for (const key in userData) {
-            if (!isNaN(Number(key))) { // Проверяем, является ли ключ числом
+            if (!isNaN(Number(key))) {
                 await ctx.reply(`пользователь: ${key} `);
             }
         }
@@ -123,6 +127,26 @@ bot.action('increase_limit', async (ctx)=>{
           FILE: main.js}`)
     }
 })
+bot.action('user_list', async (ctx) =>{
+    try{
+        ctx.session.mode = 'user_list'
+         ctx.reply("список пользователей:")
+        const userData = await loadUserData();
+        for (const key in userData) {
+            if (!isNaN(Number(key))) {
+                await ctx.reply(`пользователь: ${key} `);
+            }
+        }
+    }catch (e) {
+        await ctx.reply('Что-то пошло не так')
+        await errToLogFile(`ERROR WHILE PROCESSING USER LIST STATE: {
+        User: ${ctx.message.from.id}
+         ERROR: ${e} ,
+          FILE: main.js}`)
+    }
+})
+
+
 bot.action('gpt', async (ctx) => {
     ctx.session ??= INITIAL_SESSION;
     try
@@ -188,6 +212,18 @@ bot.action('vision', async (ctx) => {
          FILE: main.js}`)
     }
 });
+bot.action('add_user', async (ctx)=>{
+try{
+    ctx.session.mode = 'add_user';
+    ctx.reply("введите id нужного пользователя")
+}catch (e) {
+    await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start')
+    await errToLogFile(`ERROR WHILE PROCESSING ADD USER STATE: {
+        User: ${ctx.message.from.id}
+         ERROR: ${e} , 
+         FILE: main.js}`)
+}
+})
 
 
 bot.on(message('text'), async (ctx) => {
@@ -222,6 +258,9 @@ bot.on(message('text'), async (ctx) => {
                     break;
                 case 'increase_limit':
                     await increase_limit(ctx)
+                    break;
+                case 'add_user':
+                    await add_user(ctx)
                     break;
 
 
@@ -380,6 +419,24 @@ async function increase_limit(ctx){
     }
 }
 
+async function add_user(ctx){
+    ctx.session ??= INITIAL_SESSION
+    try{
+        const new_user_id = ctx.message.text
+        try{
+        addUser(new_user_id)
+            ctx.reply(`пользователь ${new_user_id} успешно добавлен`)
+        }catch (e) {
+            ctx.reply("ошибка при добавлении пользователя")
+        }
+    }catch (e) {
+        await ctx.reply("что то пошло не так")
+        await errToLogFile(`ERROR WHILE ADDING USER: {
+        User: ${ctx.message.from.id} 
+        ERROR: ${e} , 
+        FILE: main.js}`)
+    }
+}
 async function vision_v(ctx){
     ctx.session ??= INITIAL_SESSION;
     try
