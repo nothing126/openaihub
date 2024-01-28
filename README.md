@@ -172,9 +172,13 @@ for suggestions or questions please contact forgptjs12@gmail.com
 Its my own project developed only by me
 
 ## How to use
-For a regular user, the bot is launched with the command ```/start``` this will allow you to access the menu for interacting with the bot, 
-![menu](путь_к_изображению)
-which is currently only available in Russian. For user also avalible command ```/admin``` 
+For a regular user, the bot is launched with the command ```/start``` this will allow you to access the menu for interacting with the bot, which is currently only available in Russian.
+
+![menu](https://github.com/nothing126/openaihub/blob/master/img/menu%20bot.png)
+
+For user also avalible command ```/admin``` which allows you to manage the user request limit and user list by interacting with the bot in a separate menu. Only the owner of the id whose id is specified in the ```config.js``` file has access to it
+
+![admin](https://github.com/nothing126/openaihub/blob/master/img/menu%20bot.png)
 
 [contributors-shield]:https://img.shields.io/github/contributors/nothing126/openaihub.svg?style=for-the-badge
 [contributors-url]: https://github.com/nothing126/openaihub/graphs/contributors
