@@ -41,6 +41,7 @@
 - [TO DO](#to-do)
 - [CONTRIBUTIONS](#contributions)
 - [PROJECT TEAM](#project-team )
+- [HOW TO USE](#)
 
  ----
 
@@ -125,6 +126,8 @@ Also you need ```config.js```  in which the api keys will be stored. For example
 ```javascript
     export const openaiKey ='YOUR OPENAI KEY'
     export const tgKey =  'YOUR TELEGRAM KEY'
+    export const owner_id = 'YOUR TELEGRAM ID'
+
 ```
  ----
 ## To do
@@ -167,6 +170,11 @@ for suggestions or questions please contact forgptjs12@gmail.com
  ----
 ## Project team
 Its my own project developed only by me
+
+## How to use
+For a regular user, the bot is launched with the command ```/start``` this will allow you to access the menu for interacting with the bot, 
+![menu](путь_к_изображению)
+which is currently only available in Russian. For user also avalible command ```/admin``` 
 
 [contributors-shield]:https://img.shields.io/github/contributors/nothing126/openaihub.svg?style=for-the-badge
 [contributors-url]: https://github.com/nothing126/openaihub/graphs/contributors
