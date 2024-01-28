@@ -20,6 +20,7 @@ import {remove_user} from "./remove_user.js";
 
 import {plus_limit} from "./plus_limit.js";
 import {addUser} from "./new_user.js";
+import {owner_id} from "./config.js";
 
 const bot = new Telegraf(tgKey)
 
@@ -68,7 +69,7 @@ bot.command('admin', async (ctx)=>{
     ctx.session= INITIAL_SESSION
     const user_id = ctx.from.id
     try{
-    if (user_id == '1200103539' ){
+    if (user_id == owner_id ){
     ctx.reply("вы вошли в режим администратора" , Markup.inlineKeyboard([
         [Markup.button.callback('удалить пользователя', 'delete_user')],
         [Markup.button.callback('добавить пользователя', 'add_user')],
@@ -92,13 +93,14 @@ bot.action('delete_user', async (ctx)=>{
     ctx.session ??= INITIAL_SESSION;
     try {
         ctx.session.mode = 'delete_user'
-        await ctx.reply("выбери кого удалить")
+        await ctx.reply("выбери кого удалить:")
         const userData = await loadUserData();
         for (const key in userData) {
             if (!isNaN(Number(key))) {
                 await ctx.reply(`пользователь: ${key} `);
             }
         }
+        await ctx.reply("-------------------------------")
     }catch (e) {
         await ctx.reply('Что-то пошло не так')
         await errToLogFile(`ERROR WHILE PROCESSING DELETE USER STATE: {
@@ -119,6 +121,7 @@ bot.action('increase_limit', async (ctx)=>{
                 await ctx.reply(`пользователь: ${key} `);
             }
         }
+        await ctx.reply("-------------------------------")
     }catch (e) {
         await ctx.reply('Что-то пошло не так')
         await errToLogFile(`ERROR WHILE PROCESSING DELETE USER STATE: {
@@ -137,6 +140,7 @@ bot.action('user_list', async (ctx) =>{
                 await ctx.reply(`пользователь: ${key} `);
             }
         }
+        await ctx.reply("-------------------------------")
     }catch (e) {
         await ctx.reply('Что-то пошло не так')
         await errToLogFile(`ERROR WHILE PROCESSING USER LIST STATE: {
