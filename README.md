@@ -178,7 +178,7 @@ For a regular user, the bot is launched with the command ```/start``` this will 
 
 For user also avalible command ```/admin``` which allows you to manage the user request limit and user list by interacting with the bot in a separate menu. Only the owner of the id whose id is specified in the ```config.js``` file has access to it
 
-![admin](https://github.com/nothing126/openaihub/blob/master/img/menu%20bot.png)
+![admin](https://github.com/nothing126/openaihub/blob/master/img/admin%20menu.png)
 
 [contributors-shield]:https://img.shields.io/github/contributors/nothing126/openaihub.svg?style=for-the-badge
 [contributors-url]: https://github.com/nothing126/openaihub/graphs/contributors
