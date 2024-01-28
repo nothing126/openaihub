@@ -3,13 +3,14 @@ import { createWriteStream } from 'fs';
 import {dirname, resolve} from "path";
 import {fileURLToPath} from "url";
 import{errToLogFile} from "./errwriter.js";
+import{image_path} from "./config.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export async function downloadImage(url, filename) {
     try
     {
-        const Path = resolve(__dirname, 'C:\\Users\\ajiga\\WebstormProjects\\untitled2\\img', `${filename}.png`)
+        const Path = resolve(__dirname, image_path , `${filename}.png`)
         const response = await axios({
             method: 'get',
             url,

@@ -75,7 +75,8 @@ bot.command('admin', async (ctx)=>{
         [Markup.button.callback('добавить пользователя', 'add_user')],
         [Markup.button.callback('повысить лимит пользователя', 'increase_limit')],
         [Markup.button.callback('список пользователей', 'user_list')]
-    ]))
+    ]
+    ))
     }else{
          await ctx.reply("кажется у вас недостаточно прав для совершения это действия, прошу обратиться к администратору")
     }
@@ -95,13 +96,16 @@ bot.action('delete_user', async (ctx)=>{
         ctx.session.mode = 'delete_user'
         await ctx.reply("выбери кого удалить:")
         const userData = await loadUserData();
-        for (const key in userData) {
-            if (!isNaN(Number(key))) {
+        for (const key in userData)
+        {
+            if (!isNaN(Number(key)))
+            {
                 await ctx.reply(`пользователь: ${key} `);
             }
         }
         await ctx.reply("-------------------------------")
-    }catch (e) {
+    }catch (e)
+    {
         await ctx.reply('Что-то пошло не так')
         await errToLogFile(`ERROR WHILE PROCESSING DELETE USER STATE: {
         User: ${ctx.message.from.id}
@@ -116,13 +120,16 @@ bot.action('increase_limit', async (ctx)=>{
         ctx.session.mode = 'increase_limit'
         await ctx.reply("для кого повысить лимит")
         const userData = await loadUserData();
-        for (const key in userData) {
-            if (!isNaN(Number(key))) {
+        for (const key in userData)
+        {
+            if (!isNaN(Number(key)))
+            {
                 await ctx.reply(`пользователь: ${key} `);
             }
         }
         await ctx.reply("-------------------------------")
-    }catch (e) {
+    }catch (e)
+    {
         await ctx.reply('Что-то пошло не так')
         await errToLogFile(`ERROR WHILE PROCESSING DELETE USER STATE: {
         User: ${ctx.message.from.id}
@@ -135,13 +142,16 @@ bot.action('user_list', async (ctx) =>{
         ctx.session.mode = 'user_list'
          ctx.reply("список пользователей:")
         const userData = await loadUserData();
-        for (const key in userData) {
-            if (!isNaN(Number(key))) {
+        for (const key in userData)
+        {
+            if (!isNaN(Number(key)))
+            {
                 await ctx.reply(`пользователь: ${key} `);
             }
         }
         await ctx.reply("-------------------------------")
-    }catch (e) {
+    }catch (e)
+    {
         await ctx.reply('Что-то пошло не так')
         await errToLogFile(`ERROR WHILE PROCESSING USER LIST STATE: {
         User: ${ctx.message.from.id}
@@ -220,7 +230,8 @@ bot.action('add_user', async (ctx)=>{
 try{
     ctx.session.mode = 'add_user';
     ctx.reply("введите id нужного пользователя")
-}catch (e) {
+}catch (e)
+{
     await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start')
     await errToLogFile(`ERROR WHILE PROCESSING ADD USER STATE: {
         User: ${ctx.message.from.id}
@@ -257,16 +268,18 @@ bot.on(message('text'), async (ctx) => {
                 case 'vision':
                     await vision_t(ctx)
                     break;
+
                 case 'delete_user':
                     await delete_user(ctx)
                     break;
+
                 case 'increase_limit':
                     await increase_limit(ctx)
                     break;
+
                 case 'add_user':
                     await add_user(ctx)
                     break;
-
 
                 default:
                     await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start')
@@ -313,7 +326,7 @@ bot.on(message('voice'), async (ctx) => {
                     break;
 
                 default:
-                    await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /new')
+                    await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start')
             }
         }else
         {
@@ -338,7 +351,8 @@ bot.on(message('photo'), async (ctx)=>{
                 await get_href(ctx)
                 break;
         }
-    }catch (e) {
+    }catch (e)
+    {
         await ctx.reply('Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start')
         await errToLogFile(`ERROR WHILE HANDLING PICTURE: {
         User: ${ctx.message.from.id} 
@@ -388,7 +402,7 @@ async function delete_user(ctx){
     try{
         const text = ctx.message.text
         try {
-            await remove_user('./userIds.json', text)
+            await remove_user(text)
             ctx.reply("пользователь успешно удален")
         }catch (e) {
             ctx.reply("действие не выполнено, повторите попытку")
@@ -403,6 +417,7 @@ async function delete_user(ctx){
 
     }
 }
+
 async function increase_limit(ctx){
     ctx.session ??= INITIAL_SESSION;
     try {
@@ -428,7 +443,7 @@ async function add_user(ctx){
     try{
         const new_user_id = ctx.message.text
         try{
-        addUser(new_user_id)
+        await addUser(new_user_id)
             ctx.reply(`пользователь ${new_user_id} успешно добавлен`)
         }catch (e) {
             ctx.reply("ошибка при добавлении пользователя")

@@ -1,11 +1,12 @@
 import { promises as fsPromises } from "fs";
 import {writeToLogFile} from "./logwriter.js";
 import {errToLogFile} from "./errwriter.js";
+import {bd_path} from "./config.js";
 
-export async function remove_user(filePath, jsonKey){
+export async function remove_user( jsonKey){
     try {
         // Чтение содержимого файла
-        const data = await fsPromises.readFile(filePath, 'utf-8');
+        const data = await fsPromises.readFile(bd_path, 'utf-8');
 
         if (!data) {
             await errToLogFile('Файл пустой или не содержит данных');
@@ -35,7 +36,7 @@ export async function remove_user(filePath, jsonKey){
         }
 
         // Запись изменений обратно в файл
-        await fsPromises.writeFile(filePath, JSON.stringify(graph, null, 2));
+        await fsPromises.writeFile(bd_path, JSON.stringify(graph, null, 2));
        await writeToLogFile(`Ключ "${jsonKey}" был успешно удален из файла`);
     } catch (e) {
        await errToLogFile('Произошла ошибка:', e);

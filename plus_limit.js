@@ -1,10 +1,11 @@
 import { readFileSync, writeFileSync } from 'fs';
 import { errToLogFile } from './errwriter.js';
 import {writeToLogFile} from "./logwriter.js";
+import{bd_path} from "./config.js";
 
 export async function plus_limit(userId, incrementBy)
 {
-    const userDataPath = './userIds.json'; // Replace with the actual path
+    const userDataPath = bd_path; // Replace with the actual path
 
     try
     {

@@ -6,6 +6,7 @@ import {dirname,resolve} from 'path';
 import {fileURLToPath} from 'url';
 import {remove_file} from "./remove.js";
 import {errToLogFile} from "./errwriter.js";
+import {voices_path} from "./config.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 class OgaConverter{
@@ -13,7 +14,7 @@ class OgaConverter{
     {
         ffmpeg.setFfmpegPath(installer.path)
     }
-    toMp3(input,output){
+    async toMp3(input,output){
         try
         {
             const outputPath= resolve(dirname(input), `${output}.mp3`)
@@ -31,14 +32,14 @@ class OgaConverter{
         }
         catch (e)
         {
-            errToLogFile(`Error while creating mp3, ERROR: ${e} , FILE: oga.js`)
+            await errToLogFile(`Error while creating mp3, ERROR: ${e} , FILE: oga.js`)
 
         }
     }
 
     async create(url, filename){
         try {
-            const ogaPath = resolve(__dirname, 'C:\\Users\\ajiga\\WebstormProjects\\untitled3\\voices', `${filename}.oga`)
+            const ogaPath = resolve(__dirname, voices_path, `${filename}.oga`)
             const response= await axios({
                 method: 'get',
                 url,
