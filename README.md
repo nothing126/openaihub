@@ -132,8 +132,8 @@ Also you need ```config.js```  in which the api keys will be stored. For example
  ----
 ## To do
 - [x] add readme
-- [ ] improve image generation
-- [ ] switch to gpt-4
+- [x] improve image generation
+- [x] switch to gpt-4
 
  ----
 ## Contributions      
