@@ -373,7 +373,8 @@ async function vision_t(ctx) {
       await writeToLogFile(
         `User: ${ctx.message.from.id} make GPT-vision text request`,
       );
-      await ctx.reply("запрос принял, ожидайте");
+      const waitingMessage = await ctx.reply(
+          "⏳")
       ctx.session.messages.push({
         text: ctx.message.text,
       });
@@ -381,6 +382,8 @@ async function vision_t(ctx) {
         ctx.session.messages[0].link,
         ctx.session.messages[1].text,
       );
+      await ctx.deleteMessage(waitingMessage.message_id);
+
       await ctx.reply(
         resp.message.content,
         Markup.inlineKeyboard([Markup.button.callback("Выйти", "exit")]),
@@ -463,7 +466,8 @@ async function vision_v(ctx) {
     const count = usersData[userId].messageCount;
     const limit = usersData[userId].messageLimit;
     if (usersData[userId] && count < limit) {
-      await ctx.reply("запрос принял, ожидайте");
+      const waitingMessage = await ctx.reply(
+          "⏳")
       await plus_count(userId, 1);
       const link = await ctx.telegram.getFileLink(ctx.message.voice.file_id);
       const user_id = String(ctx.message.from.id);
@@ -479,6 +483,9 @@ async function vision_v(ctx) {
         ctx.session.messages[0].link,
         ctx.session.messages[1].text,
       );
+
+      await ctx.deleteMessage(waitingMessage.message_id);
+
       await ctx.reply(
         resp.message.content,
         Markup.inlineKeyboard([Markup.button.callback("Выйти", "exit")]),
@@ -526,9 +533,8 @@ async function GPT_t(ctx) {
     const count = usersData[userId].messageCount;
     const limit = usersData[userId].messageLimit;
     if (usersData[userId] && count < limit) {
-      await ctx.reply(
-        "принял ваш запрос, ожидайте ответа (это может занять несколько минут)",
-      );
+      const waitingMessage = await ctx.reply(
+          "⏳")
       await plus_count(userId, 1);
       await writeToLogFile(
         `User: ${ctx.message.from.id} make GPT text request`,
@@ -545,9 +551,11 @@ async function GPT_t(ctx) {
         content: rsp,
       });
 
+      await ctx.deleteMessage(waitingMessage.message_id);
+
       await ctx.reply(
-        String(rsp),
-        Markup.inlineKeyboard([Markup.button.callback("Выйти", "exit")]),
+          String(rsp),
+          Markup.inlineKeyboard([Markup.button.callback("Выйти", "exit")]),
       );
     } else {
       ctx.reply("Вы достигли лимита сообщений.");
@@ -576,9 +584,8 @@ async function GPT_v(ctx) {
       await writeToLogFile(
         `User: ${ctx.message.from.id} make GPT voice request`,
       );
-      await ctx.reply(
-        "сообщение получил, жду ответа от сервера (это может занять несколько минут)",
-      );
+      const waitingMessage = await ctx.reply(
+          "⏳")
       const link = await ctx.telegram.getFileLink(ctx.message.voice.file_id);
       const user_id = String(ctx.message.from.id);
       const ogaPath = await oga.create(link.href, user_id);
@@ -597,6 +604,8 @@ async function GPT_v(ctx) {
         role: openai.roles.ASSISTANT,
         content: rsp,
       });
+
+      await ctx.deleteMessage(waitingMessage.message_id);
 
       await ctx.reply(
         String(rsp),
@@ -629,15 +638,16 @@ async function dalle_t(ctx) {
       await writeToLogFile(
         `User: ${ctx.message.from.id} make dall-e text request`,
       );
-      ctx.reply(code("генерация картинки..."));
-      ctx.reply(
-        code("дождитесь окончания генерации, это может занять несколько минут"),
-      );
+      const waitingMessage = await ctx.reply(
+          "⏳")
+
 
       const url = await openai.dalle(ctx.message.text);
       const filename = await RandN();
       const image_path = await downloadImage(url, filename);
       await ctx.replyWithDocument({ source: image_path });
+      await ctx.deleteMessage(waitingMessage.message_id);
+
       ctx.reply("следующая генерация доступна через минуту");
 
       ctx.reply(
@@ -669,7 +679,8 @@ async function dalle_v(ctx) {
     const limit = usersData[userId].messageLimit;
     if (usersData[userId] || count < limit) {
       await plus_count(userId, 1);
-      ctx.reply(code("генерация картинки..."));
+      const waitingMessage = await ctx.reply(
+          "⏳")
       await writeToLogFile(
         `User: ${ctx.message.from.id} make dall-e voice request`,
       );
@@ -684,6 +695,7 @@ async function dalle_v(ctx) {
       const url = await openai.dalle(String(text));
       const image_path = await downloadImage(url, filename);
       await ctx.replyWithDocument({ source: image_path });
+      await ctx.deleteMessage(waitingMessage.message_id);
       ctx.reply("следующая генерация доступна через минуту");
 
       ctx.reply(
@@ -719,13 +731,16 @@ async function v2t_v(ctx) {
         `User: ${ctx.message.from.id} make v2t voice request`,
       );
       await ctx.reply("отправьте или перешлите голосовое сообщение");
-      await ctx.reply(code("сообщение принял, жду ответ от сервера..."));
+      const waitingMessage = await ctx.reply(
+          "⏳")
+
 
       const link = await ctx.telegram.getFileLink(ctx.message.voice.file_id);
       const filename = await RandN();
       const ogaPath = await oga.create(link.href, filename);
       const mp3Path = await oga.toMp3(ogaPath, filename);
       const text = await openai.transcription(mp3Path);
+      await ctx.deleteMessage(waitingMessage.message_id);
       await ctx.reply(
         `текст сообщения: ${text}`,
         Markup.inlineKeyboard([Markup.button.callback("Выйти", "exit")]),
@@ -755,10 +770,13 @@ async function v2t_t(ctx) {
       await writeToLogFile(
         `User: ${ctx.message.from.id} make dall-e text request`,
       );
+      const waitingMessage = await ctx.reply(
+          "⏳")
       ctx.reply(
         "отправьте или перешлите голосовое сообщение",
         Markup.inlineKeyboard([Markup.button.callback("Выйти", "exit")]),
       );
+      await ctx.deleteMessage(waitingMessage.message_id);
     } else {
       ctx.reply("Вы достигли лимита сообщений.");
     }

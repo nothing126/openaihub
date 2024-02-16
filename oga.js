@@ -35,7 +35,7 @@ class OgaConverter {
   }
 
   async create(url, filename) {
-    try {
+    try { 
       const ogaPath = resolve(__dirname, voices_path, `${filename}.oga`);
       const response = await axios({
         method: "get",
