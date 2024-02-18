@@ -39,22 +39,26 @@ bot.command("start", async (ctx) => {
     const usersData = await loadUserData();
     const count = usersData[userId].messageCount;
     const limit = usersData[userId].messageLimit;
+
     if (usersData[userId] && count < limit) {
       await ctx.reply(
-        "здравствуйте, выберите режим",
+        "Для того чтобы начать диалог выберите нужный вам режим",
         Markup.inlineKeyboard([
           [Markup.button.callback("Разговор с ChatGPT", "gpt")],
           [Markup.button.callback("Генерация картинок", "dalle")],
           [Markup.button.callback("анализ картинки", "vision")],
           [Markup.button.callback("голос в текст", "v2t")],
+          [Markup.button.callback("информация", "info")],
         ]),
       );
     } else {
-      await ctx.reply("Вы достигли лимита сообщений.");
+      await ctx.reply(
+        "Вы достигли лимита сообщений. Свяжитесь с администратором для решений проблемы. email forgptjs12@gmail.com",
+      );
     }
   } catch (e) {
     await ctx.reply(
-      "Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start",
+      "вы не авторизованы, повторите попытку или свяжитесь с администратором email forgptjs12@gmail.com ",
     );
     await errToLogFile(`ERROR WHILE START COMMAND: {
         User: ${ctx.message.from.id} 
@@ -84,7 +88,7 @@ bot.command("admin", async (ctx) => {
       );
     } else {
       await ctx.reply(
-        "кажется у вас недостаточно прав для совершения это действия, прошу обратиться к администратору",
+        "кажется у вас недостаточно прав для совершения это действия, прошу обратиться к администратору email forgptjs12@gmail.com ",
       );
     }
   } catch (e) {
@@ -93,6 +97,30 @@ bot.command("admin", async (ctx) => {
         User: ${ctx.message.from.id} 
         ERROR: ${e} , 
         FILE: main.js}`);
+  }
+});
+
+bot.action("info", async (ctx) => {
+  ctx.session ??= INITIAL_SESSION;
+  try {
+    ctx.session.mode = "info";
+    await ctx.reply(
+      "Вас приветствует чат бот с исскувственным интелектом Dale. Он позволит вам использовать последнюю версию chat-GPT-4 для генерации и работы с текстом, " +
+        "а также анализа картинок с последующим ответом на интересующие вас вопросы. Также бот позволяет генерировать картинки с помощью новейшей генеративной " +
+        "модели Dall-e-3, что обеспечивает высокую чувствительность к деталям и высокое качество изображений. Кроме этого бот может анализировать голосовые сообщения " +
+        "и переводить их в текст используя whisper-1 благодаря которому бот способен понимать свыше сотни языков в числе которых русский, английскй и прочие. Все запросы " +
+        "бот может принимать как в текстовом так и в аудио формате, что упрощает взаимодействие со свеми необходимыми функциями. Для более подробной информации рекомендую " +
+        "перейти на github репозиторий проекта: https://github.com/nothing126/openaihub там вы найдете все использованные технологии исходный код и прочее." +
+        "Для использования бота нужно выйти с этого режима используя кнопку внизу, а далее выберите режим" +
+        "Для связи с администратором обращайтесь на email forgptjs12@gmail.com",
+      Markup.inlineKeyboard([Markup.button.callback("Выйти", "exit")]),
+    );
+  } catch (e) {
+    await ctx.reply("Что-то пошло не так");
+    await errToLogFile(`ERROR WHILE PROCESSING INFO STATE: {
+        User: ${ctx.message.from.id}
+         ERROR: ${e} ,
+          FILE: main.js}`);
   }
 });
 
@@ -166,7 +194,7 @@ bot.action("gpt", async (ctx) => {
     );
   } catch (e) {
     await ctx.reply(
-      "Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start",
+      "Что-то пошло не так, попробуйте заново выбрать режим или ввести команду /start",
     );
     await errToLogFile(`ERROR WHILE PROCESSING DALLE STATE: {
         User: ${ctx.message.from.id}
@@ -184,7 +212,7 @@ bot.action("dalle", async (ctx) => {
     );
   } catch (e) {
     await ctx.reply(
-      "Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start",
+      "Что-то пошло не так, попробуйте заново выбрать режим или ввести команду /start",
     );
     await errToLogFile(`ERROR WHILE PROCESSING DALLE STATE: {
         User: ${ctx.message.from.id} 
@@ -202,7 +230,7 @@ bot.action("v2t", async (ctx) => {
     );
   } catch (e) {
     await ctx.reply(
-      "Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start",
+      "Что-то пошло не так, попробуйте заново выбрать режим или ввести команду /start",
     );
     await errToLogFile(`ERROR WHILE PROCESSING  V2T STATE: {
         User: ${ctx.message.from.id}
@@ -217,7 +245,7 @@ bot.action("vision", async (ctx) => {
     await ctx.reply("отправьте картинку для анализа");
   } catch (e) {
     await ctx.reply(
-      "Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start",
+      "Что-то пошло не так, попробуйте заново выбрать режим или ввести команду /start",
     );
     await errToLogFile(`ERROR WHILE PROCESSING  IMAGE STATE: {
         User: ${ctx.message.from.id}
@@ -231,7 +259,7 @@ bot.action("add_user", async (ctx) => {
     ctx.reply("введите id нужного пользователя");
   } catch (e) {
     await ctx.reply(
-      "Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start",
+      "Что-то пошло не так, попробуйте заново выбрать режим или ввести команду /start",
     );
     await errToLogFile(`ERROR WHILE PROCESSING ADD USER STATE: {
         User: ${ctx.message.from.id}
@@ -280,15 +308,17 @@ bot.on(message("text"), async (ctx) => {
 
         default:
           await ctx.reply(
-            "Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start",
+            "Что-то пошло не так, попробуйте заново выбрать режим или ввести команду /start",
           );
       }
     } else {
-      ctx.reply("вы достигли лимита сообщений");
+      await ctx.reply(
+        "Вы достигли лимита сообщений. Свяжитесь с администратором для решений проблемы. email forgptjs12@gmail.com",
+      );
     }
   } catch (e) {
     await ctx.reply(
-      "Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start",
+      "Что-то пошло не так, попробуйте заново выбрать режим или ввести команду /start",
     );
     await errToLogFile(`ERROR WHILE HANDLING TEXT MESSAGE: {
         User: ${ctx.message.from.id} 
@@ -329,11 +359,13 @@ bot.on(message("voice"), async (ctx) => {
           );
       }
     } else {
-      ctx.reply("вы достигли лимита сообщений");
+      await ctx.reply(
+        "Вы достигли лимита сообщений. Свяжитесь с администратором для решений проблемы. email forgptjs12@gmail.com",
+      );
     }
   } catch (e) {
     await ctx.reply(
-      "Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start",
+      "Что-то пошло не так, попробуйте заново выбрать режим или ввести команду /start",
     );
     await errToLogFile(`ERROR WHILE HANDLING VOICE MESSAGE: {
         User: ${ctx.message.from.id} 
@@ -352,7 +384,7 @@ bot.on(message("photo"), async (ctx) => {
     }
   } catch (e) {
     await ctx.reply(
-      "Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start",
+      "Что-то пошло не так, попробуйте заново выбрать режим или ввести команду /start",
     );
     await errToLogFile(`ERROR WHILE HANDLING PICTURE: {
         User: ${ctx.message.from.id} 
@@ -373,8 +405,7 @@ async function vision_t(ctx) {
       await writeToLogFile(
         `User: ${ctx.message.from.id} make GPT-vision text request`,
       );
-      const waitingMessage = await ctx.reply(
-          "⏳")
+      const waitingMessage = await ctx.reply("⏳");
       ctx.session.messages.push({
         text: ctx.message.text,
       });
@@ -389,11 +420,13 @@ async function vision_t(ctx) {
         Markup.inlineKeyboard([Markup.button.callback("Выйти", "exit")]),
       );
     } else {
-      ctx.reply("Вы достигли лимита сообщений.");
+      await ctx.reply(
+        "Вы достигли лимита сообщений. Свяжитесь с администратором для решений проблемы. email forgptjs12@gmail.com",
+      );
     }
   } catch (e) {
     await ctx.reply(
-      "Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start",
+      "Что-то пошло не так, попробуйте заново выбрать режим или ввести команду /start",
     );
     await errToLogFile(`ERROR WHILE TEXT REQUEST TO GPT-VISION: {
         User: ${ctx.message.from.id} 
@@ -466,8 +499,7 @@ async function vision_v(ctx) {
     const count = usersData[userId].messageCount;
     const limit = usersData[userId].messageLimit;
     if (usersData[userId] && count < limit) {
-      const waitingMessage = await ctx.reply(
-          "⏳")
+      const waitingMessage = await ctx.reply("⏳");
       await plus_count(userId, 1);
       const link = await ctx.telegram.getFileLink(ctx.message.voice.file_id);
       const user_id = String(ctx.message.from.id);
@@ -491,11 +523,13 @@ async function vision_v(ctx) {
         Markup.inlineKeyboard([Markup.button.callback("Выйти", "exit")]),
       );
     } else {
-      ctx.reply("вы достигли лимита сообщений");
+      await ctx.reply(
+        "Вы достигли лимита сообщений. Свяжитесь с администратором для решений проблемы. email forgptjs12@gmail.com",
+      );
     }
   } catch (e) {
     await ctx.reply(
-      "Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start",
+      "Что-то пошло не так, попробуйте заново выбрать режим или ввести команду /start",
     );
     await errToLogFile(`ERROR WHILE VOICE REQUEST TO GPT-VISION: {
         User: ${ctx.message.from.id} 
@@ -516,7 +550,7 @@ async function get_href(ctx) {
     });
   } catch (e) {
     await ctx.reply(
-      "Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start",
+      "Что-то пошло не так, попробуйте заново выбрать режим или ввести команду /start",
     );
     await errToLogFile(`ERROR WHILE RECEIVING HREF: {
         User: ${ctx.message.from.id} 
@@ -533,8 +567,7 @@ async function GPT_t(ctx) {
     const count = usersData[userId].messageCount;
     const limit = usersData[userId].messageLimit;
     if (usersData[userId] && count < limit) {
-      const waitingMessage = await ctx.reply(
-          "⏳")
+      const waitingMessage = await ctx.reply("⏳");
       await plus_count(userId, 1);
       await writeToLogFile(
         `User: ${ctx.message.from.id} make GPT text request`,
@@ -554,15 +587,17 @@ async function GPT_t(ctx) {
       await ctx.deleteMessage(waitingMessage.message_id);
 
       await ctx.reply(
-          String(rsp),
-          Markup.inlineKeyboard([Markup.button.callback("Выйти", "exit")]),
+        String(rsp),
+        Markup.inlineKeyboard([Markup.button.callback("Выйти", "exit")]),
       );
     } else {
-      ctx.reply("Вы достигли лимита сообщений.");
+      await ctx.reply(
+        "Вы достигли лимита сообщений. Свяжитесь с администратором для решений проблемы. email forgptjs12@gmail.com",
+      );
     }
   } catch (e) {
     await ctx.reply(
-      "Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start",
+      "Что-то пошло не так, попробуйте заново выбрать режим или ввести команду /start",
     );
     await errToLogFile(`ERROR IN GPT TEXT REQUEST: {
         User: ${ctx.message.from.id} 
@@ -584,8 +619,7 @@ async function GPT_v(ctx) {
       await writeToLogFile(
         `User: ${ctx.message.from.id} make GPT voice request`,
       );
-      const waitingMessage = await ctx.reply(
-          "⏳")
+      const waitingMessage = await ctx.reply("⏳");
       const link = await ctx.telegram.getFileLink(ctx.message.voice.file_id);
       const user_id = String(ctx.message.from.id);
       const ogaPath = await oga.create(link.href, user_id);
@@ -612,11 +646,13 @@ async function GPT_v(ctx) {
         Markup.inlineKeyboard([Markup.button.callback("Выйти", "exit")]),
       );
     } else {
-      ctx.reply("Вы достигли лимита сообщений.");
+      await ctx.reply(
+        "Вы достигли лимита сообщений. Свяжитесь с администратором для решений проблемы. email forgptjs12@gmail.com",
+      );
     }
   } catch (e) {
     await ctx.reply(
-      "Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start",
+      "Что-то пошло не так, попробуйте заново выбрать режим или ввести команду /start",
     );
     await errToLogFile(`ERROR IN GPT VOICE REQUEST : {
             User: ${ctx.message.from.id}, 
@@ -638,9 +674,7 @@ async function dalle_t(ctx) {
       await writeToLogFile(
         `User: ${ctx.message.from.id} make dall-e text request`,
       );
-      const waitingMessage = await ctx.reply(
-          "⏳")
-
+      const waitingMessage = await ctx.reply("⏳");
 
       const url = await openai.dalle(ctx.message.text);
       const filename = await RandN();
@@ -656,11 +690,13 @@ async function dalle_t(ctx) {
       );
       await remove_file(image_path);
     } else {
-      ctx.reply("Вы достигли лимита сообщений.");
+      await ctx.reply(
+        "Вы достигли лимита сообщений. Свяжитесь с администратором для решений проблемы. email forgptjs12@gmail.com",
+      );
     }
   } catch (e) {
     await ctx.reply(
-      "Что-то пошло не так, попробуйте заново выбрат режим или ввести команду /start",
+      "Что-то пошло не так, попробуйте заново выбрать режим или ввести команду /start",
     );
     await errToLogFile(`ERROR IN DALLE TEXT REQUEST: {
             User: ${ctx.message.from.id} 
@@ -679,8 +715,7 @@ async function dalle_v(ctx) {
     const limit = usersData[userId].messageLimit;
     if (usersData[userId] || count < limit) {
       await plus_count(userId, 1);
-      const waitingMessage = await ctx.reply(
-          "⏳")
+      const waitingMessage = await ctx.reply("⏳");
       await writeToLogFile(
         `User: ${ctx.message.from.id} make dall-e voice request`,
       );
@@ -704,7 +739,9 @@ async function dalle_v(ctx) {
       );
       await remove_file(image_path);
     } else {
-      ctx.reply("Вы достигли лимита сообщений.");
+      await ctx.reply(
+        "Вы достигли лимита сообщений. Свяжитесь с администратором для решений проблемы. email forgptjs12@gmail.com",
+      );
     }
   } catch (e) {
     await ctx.reply(
@@ -731,9 +768,7 @@ async function v2t_v(ctx) {
         `User: ${ctx.message.from.id} make v2t voice request`,
       );
       await ctx.reply("отправьте или перешлите голосовое сообщение");
-      const waitingMessage = await ctx.reply(
-          "⏳")
-
+      const waitingMessage = await ctx.reply("⏳");
 
       const link = await ctx.telegram.getFileLink(ctx.message.voice.file_id);
       const filename = await RandN();
@@ -770,15 +805,16 @@ async function v2t_t(ctx) {
       await writeToLogFile(
         `User: ${ctx.message.from.id} make dall-e text request`,
       );
-      const waitingMessage = await ctx.reply(
-          "⏳")
+      const waitingMessage = await ctx.reply("⏳");
       ctx.reply(
         "отправьте или перешлите голосовое сообщение",
         Markup.inlineKeyboard([Markup.button.callback("Выйти", "exit")]),
       );
       await ctx.deleteMessage(waitingMessage.message_id);
     } else {
-      ctx.reply("Вы достигли лимита сообщений.");
+      await ctx.reply(
+        "Вы достигли лимита сообщений. Свяжитесь с администратором для решений проблемы. email forgptjs12@gmail.com",
+      );
     }
   } catch (e) {
     await ctx.reply("что то пошло не так, повторите попытку");
