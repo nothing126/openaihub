@@ -22,6 +22,8 @@ import { plus_limit } from "./plus_limit.js";
 import { addUser } from "./new_user.js";
 import { owner_id } from "./config.js";
 
+
+
 const bot = new Telegraf(tgKey);
 
 const INITIAL_SESSION = {
@@ -66,9 +68,60 @@ bot.command("start", async (ctx) => {
         FILE: main.js}`);
   }
 });
+ bot.command("me",  async (ctx)=>{
+   ctx.session ??= INITIAL_SESSION
+   try{
+     await writeToLogFile(`User: ${ctx.message.from.id} ask info `);
+     const userId = ctx.from.id;
+     const usersData = await loadUserData();
+     const count = usersData[userId].messageCount;
+     const limit = usersData[userId].messageLimit;
+     ctx.reply(`id:${userId}, лимит запросов: ${limit}, счет: ${count}`)
+   }catch (e) {
+     await errToLogFile(`ERROR WHILE ME COMMAND: {
+        User: ${ctx.message.from.id} 
+        ERROR: ${e} , 
+        FILE: main.js}`);
+   }
+ })
+bot.command("new", async (ctx) => {
+  ctx.session ??= INITIAL_SESSION;
+  const userId = ctx.from.id;
+
+  await writeToLogFile(`User: ${ctx.message.from.id} start new conversation`);
+  try {
+    const usersData = await loadUserData();
+    const count = usersData[userId].messageCount;
+    const limit = usersData[userId].messageLimit;
+
+    if (usersData[userId] && count < limit) {
+      await ctx.reply(
+          "Выберите нужный вам режим",
+          Markup.inlineKeyboard([
+            [Markup.button.callback("Разговор с ChatGPT", "gpt")],
+            [Markup.button.callback("Генерация картинок", "dalle")],
+            [Markup.button.callback("анализ картинки", "vision")],
+            [Markup.button.callback("голос в текст", "v2t")],
+          ]),
+      );
+    } else {
+      await ctx.reply(
+          "Вы достигли лимита сообщений. Свяжитесь с администратором для решений проблемы. email forgptjs12@gmail.com",
+      );
+    }
+  } catch (e) {
+    await ctx.reply(
+        "вы не авторизованы, повторите попытку или свяжитесь с администратором email forgptjs12@gmail.com ",
+    );
+    await errToLogFile(`ERROR WHILE START COMMAND: {
+        User: ${ctx.message.from.id} 
+        ERROR: ${e} , 
+        FILE: main.js}`);
+  }
+});
 
 bot.command("admin", async (ctx) => {
-  ctx.session = INITIAL_SESSION;
+  ctx.session ??=INITIAL_SESSION;
   const user_id = ctx.from.id;
   try {
     if (user_id == owner_id) {
@@ -77,12 +130,7 @@ bot.command("admin", async (ctx) => {
         Markup.inlineKeyboard([
           [Markup.button.callback("удалить пользователя", "delete_user")],
           [Markup.button.callback("добавить пользователя", "add_user")],
-          [
-            Markup.button.callback(
-              "повысить лимит пользователя",
-              "increase_limit",
-            ),
-          ],
+          [Markup.button.callback("повысить лимит пользователя", "increase_limit")],
           [Markup.button.callback("список пользователей", "user_list")],
         ]),
       );
