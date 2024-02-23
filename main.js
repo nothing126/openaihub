@@ -21,8 +21,7 @@ import { remove_user } from "./remove_user.js";
 import { plus_limit } from "./plus_limit.js";
 import { addUser } from "./new_user.js";
 import { owner_id } from "./config.js";
-
-
+import { user_inform } from "./get_userinfo.js";
 
 const bot = new Telegraf(tgKey);
 
@@ -68,22 +67,19 @@ bot.command("start", async (ctx) => {
         FILE: main.js}`);
   }
 });
- bot.command("me",  async (ctx)=>{
-   ctx.session ??= INITIAL_SESSION
-   try{
-     await writeToLogFile(`User: ${ctx.message.from.id} ask info `);
-     const userId = ctx.from.id;
-     const usersData = await loadUserData();
-     const count = usersData[userId].messageCount;
-     const limit = usersData[userId].messageLimit;
-     ctx.reply(`id:${userId}, лимит запросов: ${limit}, счет: ${count}`)
-   }catch (e) {
-     await errToLogFile(`ERROR WHILE ME COMMAND: {
+bot.command("me", async (ctx) => {
+  ctx.session ??= INITIAL_SESSION;
+  try {
+    const userId = ctx.message.from.id;
+    const res = await user_inform(userId);
+    ctx.reply(`id:${userId}, лимит запросов: ${res.limit}, счет: ${res.count}`);
+  } catch (e) {
+    await errToLogFile(`ERROR WHILE ME COMMAND: {
         User: ${ctx.message.from.id} 
         ERROR: ${e} , 
         FILE: main.js}`);
-   }
- })
+  }
+});
 bot.command("new", async (ctx) => {
   ctx.session ??= INITIAL_SESSION;
   const userId = ctx.from.id;
@@ -96,22 +92,22 @@ bot.command("new", async (ctx) => {
 
     if (usersData[userId] && count < limit) {
       await ctx.reply(
-          "Выберите нужный вам режим",
-          Markup.inlineKeyboard([
-            [Markup.button.callback("Разговор с ChatGPT", "gpt")],
-            [Markup.button.callback("Генерация картинок", "dalle")],
-            [Markup.button.callback("анализ картинки", "vision")],
-            [Markup.button.callback("голос в текст", "v2t")],
-          ]),
+        "Выберите нужный вам режим",
+        Markup.inlineKeyboard([
+          [Markup.button.callback("Разговор с ChatGPT", "gpt")],
+          [Markup.button.callback("Генерация картинок", "dalle")],
+          [Markup.button.callback("анализ картинки", "vision")],
+          [Markup.button.callback("голос в текст", "v2t")],
+        ]),
       );
     } else {
       await ctx.reply(
-          "Вы достигли лимита сообщений. Свяжитесь с администратором для решений проблемы. email forgptjs12@gmail.com",
+        "Вы достигли лимита сообщений. Свяжитесь с администратором для решений проблемы. email forgptjs12@gmail.com",
       );
     }
   } catch (e) {
     await ctx.reply(
-        "вы не авторизованы, повторите попытку или свяжитесь с администратором email forgptjs12@gmail.com ",
+      "вы не авторизованы, повторите попытку или свяжитесь с администратором email forgptjs12@gmail.com ",
     );
     await errToLogFile(`ERROR WHILE START COMMAND: {
         User: ${ctx.message.from.id} 
@@ -121,7 +117,7 @@ bot.command("new", async (ctx) => {
 });
 
 bot.command("admin", async (ctx) => {
-  ctx.session ??=INITIAL_SESSION;
+  ctx.session ??= INITIAL_SESSION;
   const user_id = ctx.from.id;
   try {
     if (user_id == owner_id) {
@@ -130,8 +126,14 @@ bot.command("admin", async (ctx) => {
         Markup.inlineKeyboard([
           [Markup.button.callback("удалить пользователя", "delete_user")],
           [Markup.button.callback("добавить пользователя", "add_user")],
-          [Markup.button.callback("повысить лимит пользователя", "increase_limit")],
+          [
+            Markup.button.callback(
+              "повысить лимит пользователя",
+              "increase_limit",
+            ),
+          ],
           [Markup.button.callback("список пользователей", "user_list")],
+          [Markup.button.callback("информация о пользователе", "user_info")],
         ]),
       );
     } else {
@@ -172,6 +174,26 @@ bot.action("info", async (ctx) => {
   }
 });
 
+bot.action("user_info", async (ctx) => {
+  ctx.session ??= INITIAL_SESSION;
+  try {
+    ctx.session.mode = "user_info";
+    ctx.reply("введи id нужного пользователя");
+    const userData = await loadUserData();
+    for (const key in userData) {
+      if (!isNaN(Number(key))) {
+        await ctx.reply(`пользователь: ${key} `);
+      }
+    }
+    await ctx.reply("-------------------------------");
+  } catch (e) {
+    await ctx.reply("Что-то пошло не так");
+    await errToLogFile(`ERROR WHILE PROCESSING USER INFO STATE: {
+        User: ${ctx.message.from.id}
+         ERROR: ${e} ,
+         FILE: main.js}`);
+  }
+});
 bot.action("delete_user", async (ctx) => {
   ctx.session ??= INITIAL_SESSION;
   try {
@@ -353,6 +375,9 @@ bot.on(message("text"), async (ctx) => {
         case "add_user":
           await add_user(ctx);
           break;
+        case "user_info":
+          await user_info(ctx);
+          break;
 
         default:
           await ctx.reply(
@@ -440,7 +465,19 @@ bot.on(message("photo"), async (ctx) => {
         FILE: main.js}`);
   }
 });
-
+async function user_info(ctx) {
+  ctx.session ??= INITIAL_SESSION;
+  try {
+    const userId = ctx.message.text;
+    const res = await user_inform(userId);
+    ctx.reply(`id:${userId}, лимит запросов: ${res.limit}, счет: ${res.count}`);
+  } catch (e) {
+    await errToLogFile(`ERROR WHILE  USER INFO FUNCTION: {
+        User: ${ctx.message.from.id} 
+        ERROR: ${e} , 
+        FILE: main.js}`);
+  }
+}
 async function vision_t(ctx) {
   ctx.session ??= INITIAL_SESSION;
   try {
