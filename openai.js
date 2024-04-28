@@ -86,8 +86,6 @@ class openAI {
       );
     }
   }
-
-
 }
 
 export const openai = new openAI(openaiKey);

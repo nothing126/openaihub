@@ -155,6 +155,7 @@ bot.command("admin", async (ctx) => {
 bot.action("mess", async (ctx) => {
   ctx.session ??= INITIAL_SESSION;
   try {
+
     ctx.reply("введите текст");
     ctx.session.mode = "emergency_mess";
   } catch (e) {
@@ -355,12 +356,20 @@ bot.action("add_user", async (ctx) => {
 
 async function emergency_mess(ctx) {
   try {
+    const userId = ctx.from.id;
+    if (userId == owner_id){
     const text = ctx.message.text;
     const userData = await loadUserData();
     for (const key in userData) {
       if (!isNaN(Number(key))) {
         await bot.telegram.sendMessage(key, text);
       }
+    }
+      ctx.reply(
+          "хотите выйти?",
+          Markup.inlineKeyboard([Markup.button.callback("Выйти", "exit")]))
+    }else{
+      //
     }
   } catch (e) {
     await errToLogFile(`ERROR WHILE EMERGENCY MESSAGE : {
@@ -943,15 +952,28 @@ bot.action("exit", async (ctx) => {
   ctx.session = INITIAL_SESSION;
   try {
     ctx.session.messages.splice(0, ctx.session.messages.length);
-    await ctx.reply(
-      "Вы вышли из режима. Выберите режим:",
-      Markup.inlineKeyboard([
-        [Markup.button.callback("Разговор с ChatGPT", "gpt")],
-        [Markup.button.callback("Генерация картинок", "dalle")],
-        [Markup.button.callback("анализ картинки", "vision")],
-        [Markup.button.callback("голос в текст", "v2t")],
-      ]),
-    );
+    if(ctx.from.id == owner_id){
+      ctx.session.mode = null
+      await ctx.reply(
+          "Вы вышли из режима. Выберите режим:",
+          Markup.inlineKeyboard([
+            [Markup.button.callback("Разговор с ChatGPT", "gpt")],
+            [Markup.button.callback("Генерация картинок", "dalle")],
+            [Markup.button.callback("анализ картинки", "vision")],
+            [Markup.button.callback("голос в текст", "v2t")],
+          ]),
+      );
+    }else{
+      await ctx.reply(
+          "Вы вышли из режима. Выберите режим:",
+          Markup.inlineKeyboard([
+            [Markup.button.callback("Разговор с ChatGPT", "gpt")],
+            [Markup.button.callback("Генерация картинок", "dalle")],
+            [Markup.button.callback("анализ картинки", "vision")],
+            [Markup.button.callback("голос в текст", "v2t")],
+          ]),
+      );
+    }
   } catch (e) {
     await ctx.reply("что то пошло не так, повторите попытку");
     await errToLogFile(`ERROR IN V2T TEXT REQUEST: {
