@@ -43,7 +43,8 @@ bot.command("start", async (ctx) => {
 
     if (usersData[userId] && count < limit) {
       await ctx.reply(
-        "Для того чтобы начать диалог выберите нужный вам режим",
+        "Ознакомьтесть с информацией. " +
+          "Для того чтобы начать диалог выберите нужный вам режим",
         Markup.inlineKeyboard([
           [Markup.button.callback("Разговор с ChatGPT", "gpt")],
           [Markup.button.callback("Генерация картинок", "dalle")],
@@ -134,6 +135,7 @@ bot.command("admin", async (ctx) => {
           ],
           [Markup.button.callback("список пользователей", "user_list")],
           [Markup.button.callback("информация о пользователе", "user_info")],
+          [Markup.button.callback("срочное оповещение", "mess")],
         ]),
       );
     } else {
@@ -150,6 +152,19 @@ bot.command("admin", async (ctx) => {
   }
 });
 
+bot.action("mess", async (ctx) => {
+  ctx.session ??= INITIAL_SESSION;
+  try {
+    ctx.reply("введите текст");
+    ctx.session.mode = "emergency_mess";
+  } catch (e) {
+    await ctx.reply("Что-то пошло не так");
+    await errToLogFile(`ERROR WHILE PROCESSING INFO STATE: {
+        User: ${ctx.message.from.id}
+         ERROR: ${e} ,
+          FILE: main.js}`);
+  }
+});
 bot.action("info", async (ctx) => {
   ctx.session ??= INITIAL_SESSION;
   try {
@@ -338,6 +353,23 @@ bot.action("add_user", async (ctx) => {
   }
 });
 
+async function emergency_mess(ctx) {
+  try {
+    const text = ctx.message.text;
+    const userData = await loadUserData();
+    for (const key in userData) {
+      if (!isNaN(Number(key))) {
+        await bot.telegram.sendMessage(key, text);
+      }
+    }
+  } catch (e) {
+    await errToLogFile(`ERROR WHILE EMERGENCY MESSAGE : {
+        User: ${ctx.message.from.id}
+         ERROR: ${e} , 
+         FILE: main.js}`);
+  }
+}
+
 bot.on(message("text"), async (ctx) => {
   try {
     const userId = ctx.from.id;
@@ -379,6 +411,9 @@ bot.on(message("text"), async (ctx) => {
           await user_info(ctx);
           break;
 
+        case "emergency_mess":
+          await emergency_mess(ctx);
+          break;
         default:
           await ctx.reply(
             "Что-то пошло не так, попробуйте заново выбрать режим или ввести команду /start",
@@ -647,7 +682,6 @@ async function GPT_t(ctx) {
   ctx.session ??= INITIAL_SESSION;
   try {
     const userId = ctx.from.id;
-    ctx.session.messages.splice(0, ctx.session.messages.length);
     const usersData = await loadUserData();
     const count = usersData[userId].messageCount;
     const limit = usersData[userId].messageLimit;
@@ -695,7 +729,6 @@ async function GPT_v(ctx) {
   ctx.session ??= INITIAL_SESSION;
   try {
     const userId = ctx.from.id;
-    ctx.session.messages.splice(0, ctx.session.messages.length);
     const usersData = await loadUserData();
     const count = usersData[userId].messageCount;
     const limit = usersData[userId].messageLimit;
@@ -750,7 +783,6 @@ async function dalle_t(ctx) {
   ctx.session ??= INITIAL_SESSION;
   try {
     const userId = ctx.from.id;
-    ctx.session.messages.splice(0, ctx.session.messages.length);
     const usersData = await loadUserData();
     const count = usersData[userId].messageCount;
     const limit = usersData[userId].messageLimit;
@@ -794,7 +826,6 @@ async function dalle_v(ctx) {
   ctx.session ??= INITIAL_SESSION;
   try {
     const userId = ctx.from.id;
-    ctx.session.messages.splice(0, ctx.session.messages.length);
     const usersData = await loadUserData();
     const count = usersData[userId].messageCount;
     const limit = usersData[userId].messageLimit;
@@ -843,7 +874,6 @@ async function v2t_v(ctx) {
   ctx.session ??= INITIAL_SESSION;
   try {
     const userId = ctx.from.id;
-    ctx.session.messages.splice(0, ctx.session.messages.length);
     const usersData = await loadUserData();
     const count = usersData[userId].messageCount;
     const limit = usersData[userId].messageLimit;
@@ -881,7 +911,6 @@ async function v2t_t(ctx) {
   ctx.session ??= INITIAL_SESSION;
   try {
     const userId = ctx.from.id;
-    ctx.session.messages.splice(0, ctx.session.messages.length);
     const usersData = await loadUserData();
     const count = usersData[userId].messageCount;
     const limit = usersData[userId].messageLimit;
@@ -913,6 +942,7 @@ async function v2t_t(ctx) {
 bot.action("exit", async (ctx) => {
   ctx.session = INITIAL_SESSION;
   try {
+    ctx.session.messages.splice(0, ctx.session.messages.length);
     await ctx.reply(
       "Вы вышли из режима. Выберите режим:",
       Markup.inlineKeyboard([

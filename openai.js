@@ -19,7 +19,7 @@ class openAI {
   async chat_gpt(messages) {
     try {
       const response = await this.openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-4-turbo",
         messages,
       });
       return response.choices[0].message.content;
@@ -61,7 +61,7 @@ class openAI {
   async gptvision(image_url, text) {
     try {
       const response = await this.openai.chat.completions.create({
-        model: "gpt-4-vision-preview",
+        model: "gpt-4-turbo",
         messages: [
           {
             role: "user",
@@ -77,7 +77,7 @@ class openAI {
             ],
           },
         ],
-        max_tokens: 1500,
+        max_tokens: 4000,
       });
       return response.choices[0];
     } catch (e) {
